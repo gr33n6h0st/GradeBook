@@ -14,6 +14,7 @@
             --border: rgba(0, 242, 255, 0.15);
             --text-main: #e2e8f0;
             --text-dim: #94a3b8;
+            --card-bg: rgba(255, 255, 255, 0.02);
         }
 
         * { box-sizing: border-box; }
@@ -25,54 +26,83 @@
         /* Sidebar Navigation */
         nav { 
             width: 280px; background: rgba(0,0,0,0.95); border-right: 1px solid var(--border);
-            padding: 2rem; display: flex; flex-direction: column;
+            padding: 2rem; display: flex; flex-direction: column; flex-shrink: 0;
         }
         .logo { font-family: 'Orbitron', sans-serif; font-size: 0.9rem; color: var(--neon-cyan); margin-bottom: 3rem; letter-spacing: 2px; text-transform: uppercase; }
         .nav-btn { 
             width: 100%; padding: 12px; margin-bottom: 10px; background: transparent; border: 1px solid transparent;
-            color: var(--text-dim); cursor: pointer; text-align: left; font-size: 0.85rem; border-radius: 4px; transition: 0.2s;
+            color: var(--text-dim); cursor: pointer; text-align: left; font-size: 0.85rem; border-radius: 4px;
         }
         .active-nav { border-color: var(--neon-cyan); color: var(--neon-cyan); background: rgba(0,242,255,0.05); }
 
         /* Workspace */
-        main { flex: 1; padding: 3rem; overflow-y: auto; background-image: radial-gradient(circle at top right, #0a1018, #05070a); }
-        .header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2.5rem; }
+        main { flex: 1; padding: 3rem; overflow-y: auto; background-image: radial-gradient(circle at top right, #0a1018, #05070a); display: flex; flex-direction: column; }
+        .header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2.5rem; flex-shrink: 0; }
         h1 { font-family: 'Orbitron', sans-serif; font-size: 1.8rem; margin: 0; text-transform: uppercase; }
 
-        /* The Table Grid */
-        .glass-card { background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border); padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem; }
-        table { width: 100%; border-collapse: collapse; }
-        th { text-align: left; padding: 15px; font-size: 0.7rem; color: var(--neon-cyan); text-transform: uppercase; border-bottom: 2px solid var(--border); position: relative; }
-        td { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); position: relative; }
+        /* SCROLLABLE MATRIX FIX */
+        .matrix-wrapper { 
+            flex: 1; 
+            overflow: hidden; 
+            display: flex; 
+            flex-direction: column;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--card-bg);
+        }
         
-        /* Interactive Deletion "X" */
-        .delete-trigger { position: absolute; color: #ff4d4d; cursor: pointer; opacity: 0; transition: 0.2s; font-weight: bold; font-size: 0.9rem; }
-        .delete-assignment { top: 5px; right: 5px; }
-        .delete-student { left: -15px; top: 50%; transform: translateY(-50%); }
-        
-        th:hover .delete-assignment, td:hover .delete-student { opacity: 0.6; }
-        .delete-trigger:hover { opacity: 1 !important; }
+        .scroll-container { 
+            overflow: auto; 
+            width: 100%;
+        }
 
-        /* Professional Inputs */
-        [contenteditable] { outline: none; background: rgba(255,255,255,0.03); padding: 10px; border-radius: 4px; transition: 0.1s; border: 1px solid transparent; }
+        table { border-collapse: separate; border-spacing: 0; width: max-content; min-width: 100%; }
+        
+        /* Sticky Student Column */
+        th:first-child, td:first-child { 
+            position: sticky; 
+            left: 0; 
+            z-index: 10; 
+            background: #080c14; /* Solid color to prevent see-through when scrolling */
+            width: 250px;
+            border-right: 1px solid var(--border);
+        }
+        
+        th { 
+            text-align: left; padding: 20px; font-size: 0.7rem; color: var(--neon-cyan); 
+            text-transform: uppercase; border-bottom: 2px solid var(--border); 
+            position: relative; white-space: nowrap;
+        }
+        td { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+
+        /* Deletion Trigger X */
+        .delete-btn { 
+            position: absolute; top: 6px; right: 8px; color: #ff4d4d; 
+            cursor: pointer; opacity: 0; font-size: 0.75rem; transition: 0.2s;
+        }
+        .student-delete { left: 8px; right: auto; top: 50%; transform: translateY(-50%); }
+        th:hover .delete-btn, td:hover .delete-btn { opacity: 0.6; }
+        .delete-btn:hover { opacity: 1 !important; }
+
+        /* Inputs */
+        [contenteditable] { outline: none; background: rgba(255,255,255,0.03); padding: 10px; border-radius: 4px; border: 1px solid transparent; }
         [contenteditable]:focus { background: rgba(0,242,255,0.08); border-color: var(--neon-cyan); }
-        .score-input { font-family: 'Orbitron'; font-weight: 700; font-size: 1.1rem; text-align: center; width: 85px; }
-        .comment-input { font-size: 0.75rem; color: var(--text-dim); font-style: italic; display: block; margin-top: 6px; min-width: 220px; }
+        .score-input { font-family: 'Orbitron'; font-weight: 700; font-size: 1.1rem; text-align: center; width: 100%; }
+        .comment-input { font-size: 0.75rem; color: var(--text-dim); font-style: italic; display: block; margin-top: 8px; min-width: 200px; }
 
-        .final-average-text { font-family: 'Orbitron'; color: var(--neon-magenta); font-weight: 700; font-size: 1.2rem; }
+        /* Result Styles */
+        .average-cell { font-family: 'Orbitron'; color: var(--neon-magenta); font-weight: 700; font-size: 1.2rem; text-align: center; min-width: 120px; }
+        .btn { padding: 10px 20px; border: 1px solid var(--neon-cyan); background: transparent; color: var(--neon-cyan); font-family: 'Orbitron'; font-size: 0.7rem; cursor: pointer; border-radius: 4px; text-transform: uppercase; white-space: nowrap; }
+        .btn:hover { background: var(--neon-cyan); color: #000; box-shadow: 0 0 15px var(--neon-cyan); }
 
-        /* Buttons */
-        .btn { padding: 12px 24px; border: 1px solid var(--neon-cyan); background: transparent; color: var(--neon-cyan); font-family: 'Orbitron'; font-size: 0.7rem; cursor: pointer; border-radius: 4px; text-transform: uppercase; }
-        .btn:hover { background: var(--neon-cyan); color: #000; box-shadow: 0 0 20px var(--neon-cyan); }
-
-        /* Diagnostics & Separated Logs */
-        .diagnostics-panel { display: grid; grid-template-columns: 350px 1fr; gap: 3rem; background: rgba(0,0,0,0.85); border: 1px solid var(--neon-magenta); padding: 2.5rem; border-radius: 12px; border-left: 5px solid var(--neon-magenta); }
-        .log-container { margin-top: 2rem; border-top: 1px solid var(--border); padding-top: 1.5rem; }
-        .log-entry { margin-bottom: 15px; padding-left: 10px; border-left: 2px solid var(--neon-cyan); }
-        .log-entry-header { color: var(--neon-cyan); font-weight: 700; font-family: 'Orbitron'; font-size: 0.65rem; text-transform: uppercase; margin-bottom: 3px; }
-        .log-entry-text { font-size: 0.85rem; line-height: 1.4; color: var(--text-main); }
+        /* Diagnostics */
+        .diagnostics-area { margin-top: 2rem; display: grid; grid-template-columns: 350px 1fr; gap: 2rem; background: rgba(0,0,0,0.8); border: 1px solid var(--neon-magenta); padding: 2rem; border-radius: 8px; flex-shrink: 0; }
         
-        .chart-container { background: #000; border: 1px solid var(--border); padding: 25px; height: 380px; }
+        /* Custom Scrollbar */
+        .scroll-container::-webkit-scrollbar { height: 10px; width: 10px; }
+        .scroll-container::-webkit-scrollbar-track { background: rgba(0,0,0,0.3); }
+        .scroll-container::-webkit-scrollbar-thumb { background: var(--border); border-radius: 5px; }
+        .scroll-container::-webkit-scrollbar-thumb:hover { background: var(--neon-cyan); }
     </style>
 </head>
 <body>
@@ -92,46 +122,46 @@
             <h1 id="view-title">Computer Engineering</h1>
             <p style="color: var(--neon-cyan); font-size: 0.65rem; letter-spacing: 2px; margin-top: 5px; text-transform: uppercase;">Ontario Secondary Marking Standards</p>
         </div>
-        <div style="display:flex; gap:15px">
+        <div style="display:flex; gap:12px">
             <button class="btn" onclick="addAssignment()">+ Add Assignment</button>
             <button class="btn" onclick="addStudent()">+ Add Student</button>
         </div>
     </div>
 
-    <div class="glass-card">
-        <table id="main-grade-table">
-            <thead id="table-head"></thead>
-            <tbody id="table-body"></tbody>
-        </table>
+    <div class="matrix-wrapper">
+        <div class="scroll-container">
+            <table id="grade-matrix">
+                <thead id="h-row"></thead>
+                <tbody id="b-rows"></tbody>
+            </table>
+        </div>
     </div>
 
-    <div id="diagnostics-panel" class="diagnostics-panel" style="display:none;">
+    <div id="diag-panel" class="diagnostics-area" style="display:none;">
         <div>
-            <span style="font-family:'Orbitron'; font-size:0.7rem; color:var(--neon-magenta); letter-spacing: 1px;">Individual Analysis</span>
-            <h2 id="diagnostics-name" style="margin:10px 0; font-weight:400; font-size:2rem;">---</h2>
-            <div id="diagnostics-final" style="font-family:'Orbitron'; font-size:4.5rem; color:var(--neon-cyan); line-height: 1;">0%</div>
-            
-            <div class="log-container" id="diagnostics-logs">
-                </div>
+            <span style="font-family:'Orbitron'; font-size:0.7rem; color:var(--neon-magenta);">Student Diagnostics</span>
+            <h2 id="diag-name" style="margin:10px 0; font-weight:400; font-size:1.8rem;">---</h2>
+            <div id="diag-final" style="font-family:'Orbitron'; font-size:4rem; color:var(--neon-cyan);">0%</div>
+            <div id="diag-logs" style="margin-top:20px; font-size:0.85rem; max-height: 200px; overflow-y: auto;"></div>
         </div>
-        <div class="chart-container">
-            <canvas id="diagnosticsChart"></canvas>
+        <div style="height:350px; background:#000; padding:20px; border:1px solid var(--border);">
+            <canvas id="gradeChart"></canvas>
         </div>
     </div>
 </main>
 
 <script>
     let currentClass = 'TEJ3M';
-    let chartInstance = null;
+    let chartObj = null;
 
-    let db = JSON.parse(localStorage.getItem('techmark_v12')) || {
+    let db = JSON.parse(localStorage.getItem('techmark_v13')) || {
         'TEJ3M': {
-            tasks: [{name: "Breadboard Logic", w: 25}, {name: "Arduino Integration", w: 25}],
-            students: [{name: "Marcus Vane", scores: [{g: 82, n: "Needs to verify wire continuity before testing."}, {g: 94, n: "Code structure is modular and efficient."}]}]
+            tasks: [{name: "Initial Project", w: 20}, {name: "Technical Lab", w: 30}],
+            students: [{name: "Marcus Vane", scores: [{g: 85, n: "Consistent logic."}, {g: 90, n: "High efficiency."}]}]
         },
         'TDJ1O': {
-            tasks: [{name: "3D Rendering", w: 50}],
-            students: [{name: "Elena Rodriguez", scores: [{g: 88, n: "Lighting setup creates realistic depth."}]}]
+            tasks: [{name: "Concept Design", w: 50}],
+            students: [{name: "Elena Rodriguez", scores: [{g: 92, n: "Strong visual balance."}]}]
         }
     };
 
@@ -139,61 +169,61 @@
         currentClass = id;
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active-nav'));
         document.getElementById('btn-'+id).classList.add('active-nav');
-        document.getElementById('diagnostics-panel').style.display = 'none';
+        document.getElementById('diag-panel').style.display = 'none';
         render();
     }
 
     function render() {
         const course = db[currentClass];
-        const head = document.getElementById('table-head');
-        const body = document.getElementById('table-body');
+        const head = document.getElementById('h-row');
+        const body = document.getElementById('b-rows');
 
-        // Header Render
-        let hRow = `<tr><th style="width:250px">Student Name</th>`;
+        // Header
+        let hContent = `<tr><th>Student Personnel</th>`;
         course.tasks.forEach((t, i) => {
-            hRow += `<th>
-                <span class="delete-trigger delete-assignment" onclick="deleteTask(${i})">×</span>
+            hContent += `<th style="width:250px">
+                <span class="delete-btn" onclick="deleteTask(${i})">×</span>
                 <div contenteditable="true" onblur="updateTask(${i},'name',this.innerText)">${t.name}</div>
                 <div style="color:var(--neon-cyan); font-size:0.6rem; margin-top:4px;" contenteditable="true" onblur="updateTask(${i},'w',this.innerText)">${t.w}% Weight</div>
             </th>`;
         });
-        hRow += `<th>Weighted Average</th><th></th></tr>`;
-        head.innerHTML = hRow;
+        hContent += `<th class="average-cell">Weighted Average</th><th>Actions</th></tr>`;
+        head.innerHTML = hContent;
 
-        // Body Render
+        // Rows
         body.innerHTML = '';
         course.students.forEach((s, sIdx) => {
             let tr = document.createElement('tr');
             let wSum = 0; let wUsed = 0;
 
-            let rowHTML = `<td>
-                <span class="delete-trigger delete-student" onclick="deleteStudent(${sIdx})">×</span>
-                <div contenteditable="true" class="keyboard-nav-target" onblur="updateStudentName(${sIdx},this.innerText)" style="font-weight:600; color:var(--neon-cyan)">${s.name}</div>
+            let rContent = `<td>
+                <span class="delete-btn student-delete" onclick="deleteStudent(${sIdx})">×</span>
+                <div contenteditable="true" class="kb-nav" onblur="updateSName(${sIdx},this.innerText)" style="font-weight:600; color:var(--neon-cyan)">${s.name}</div>
             </td>`;
             
             course.tasks.forEach((t, tIdx) => {
                 let data = s.scores[tIdx] || {g: 0, n: ""};
                 wSum += (data.g * (t.w / 100));
                 wUsed += (t.w / 100);
-                rowHTML += `<td>
-                    <div contenteditable="true" class="score-input keyboard-nav-target" oninput="liveUpdate(${sIdx},${tIdx},this.innerText)">${data.g}</div>
+                rContent += `<td>
+                    <div contenteditable="true" class="score-input kb-nav" oninput="liveUpdate(${sIdx},${tIdx},this.innerText)">${data.g}</div>
                     <div contenteditable="true" class="comment-input" onblur="updateNote(${sIdx},${tIdx},this.innerText)">${data.n || "Anecdotal evidence..."}</div>
                 </td>`;
             });
 
             let final = wUsed > 0 ? (wSum / wUsed).toFixed(1) : 0;
-            rowHTML += `<td class="final-average-text" id="final-${sIdx}">${final}%</td>`;
-            rowHTML += `<td><button class="btn" style="font-size:0.6rem; padding:8px 12px;" onclick="viewDiagnostics(${sIdx})">Diagnostics</button></td>`;
+            rContent += `<td class="average-cell" id="final-${sIdx}">${final}%</td>`;
+            rContent += `<td><button class="btn" onclick="viewDiagnostics(${sIdx})">Diagnostics</button></td>`;
             
-            tr.innerHTML = rowHTML;
+            tr.innerHTML = rContent;
             body.appendChild(tr);
         });
 
-        setupEnterKey();
+        setupEnterNav();
     }
 
-    function setupEnterKey() {
-        const table = document.getElementById('main-grade-table');
+    function setupEnterNav() {
+        const table = document.getElementById('grade-matrix');
         table.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 e.preventDefault();
@@ -203,7 +233,7 @@
                 const colIndex = Array.from(row.cells).indexOf(td);
                 const nextRow = row.nextElementSibling;
                 if (nextRow) {
-                    const target = nextRow.cells[colIndex].querySelector('.keyboard-nav-target');
+                    const target = nextRow.cells[colIndex].querySelector('.kb-nav');
                     if (target) target.focus();
                 }
             }
@@ -213,7 +243,6 @@
     function liveUpdate(sIdx, tIdx, val) {
         let v = parseFloat(val) || 0;
         db[currentClass].students[sIdx].scores[tIdx].g = v;
-        
         let ws = 0; let wu = 0;
         db[currentClass].tasks.forEach((t, i) => {
             ws += (db[currentClass].students[sIdx].scores[i].g * (t.w/100));
@@ -224,7 +253,7 @@
 
     function updateNote(s, t, v) { db[currentClass].students[s].scores[t].n = v; }
     function updateTask(i, f, v) { db[currentClass].tasks[i][f] = f === 'w' ? (parseFloat(v) || 0) : v; render(); }
-    function updateStudentName(i, v) { db[currentClass].students[i].name = v; }
+    function updateSName(i, v) { db[currentClass].students[i].name = v; }
 
     function addAssignment() {
         db[currentClass].tasks.push({name: "New Assignment", w: 10});
@@ -237,32 +266,30 @@
         render();
     }
 
-    function deleteTask(i) { if(confirm("Remove this assignment column and all marks within it?")) { db[currentClass].tasks.splice(i, 1); db[currentClass].students.forEach(s => s.scores.splice(i, 1)); render(); } }
-    
-    function deleteStudent(i) { if(confirm("Permanently delete this student from the roster?")) { db[currentClass].students.splice(i, 1); render(); } }
+    function deleteTask(i) { if(confirm("Permanently delete assignment?")) { db[currentClass].tasks.splice(i, 1); db[currentClass].students.forEach(s => s.scores.splice(i, 1)); render(); } }
+    function deleteStudent(i) { if(confirm("Permanently delete student?")) { db[currentClass].students.splice(i, 1); render(); } }
 
     function viewDiagnostics(idx) {
         const s = db[currentClass].students[idx];
         const tasks = db[currentClass].tasks;
-        document.getElementById('diagnostics-panel').style.display = 'grid';
-        document.getElementById('diagnostics-name').innerText = s.name;
-        document.getElementById('diagnostics-final').innerText = document.getElementById(`final-${idx}`).innerText;
+        document.getElementById('diag-panel').style.display = 'grid';
+        document.getElementById('diag-name').innerText = s.name;
+        document.getElementById('diag-final').innerText = document.getElementById(`final-${idx}`).innerText;
 
-        // Render separated comments per project
-        const logContainer = document.getElementById('diagnostics-logs');
-        logContainer.innerHTML = '';
+        const logCont = document.getElementById('diag-logs');
+        logCont.innerHTML = '';
         s.scores.forEach((score, i) => {
             if(score.n && score.n !== "Anecdotal evidence...") {
-                const entry = document.createElement('div');
-                entry.className = 'log-entry';
-                entry.innerHTML = `<div class="log-entry-header">${tasks[i].name} — Result: ${score.g}%</div><div class="log-entry-text">${score.n}</div>`;
-                logContainer.appendChild(entry);
+                logCont.innerHTML += `<div style="margin-bottom:10px; border-left:2px solid var(--neon-cyan); padding-left:10px;">
+                    <div style="font-size:0.6rem; color:var(--neon-cyan); font-family:'Orbitron';">${tasks[i].name} (${score.g}%)</div>
+                    <div>${score.n}</div>
+                </div>`;
             }
         });
 
-        if(chartInstance) chartInstance.destroy();
-        const ctx = document.getElementById('diagnosticsChart').getContext('2d');
-        chartInstance = new Chart(ctx, {
+        if(chartObj) chartObj.destroy();
+        const ctx = document.getElementById('gradeChart').getContext('2d');
+        chartObj = new Chart(ctx, {
             type: 'bar',
             data: {
                 labels: tasks.map(t => t.name),
@@ -270,27 +297,22 @@
                     data: s.scores.map(g => g.g),
                     backgroundColor: 'rgba(0, 242, 255, 0.4)',
                     borderColor: '#00f2ff',
-                    borderWidth: 2,
-                    barThickness: 40
+                    borderWidth: 2
                 }]
             },
             options: {
                 responsive: true, maintainAspectRatio: false,
                 plugins: { legend: { display: false } },
                 scales: { 
-                    y: { 
-                        min: 0, max: 100, 
-                        grid: { color: 'rgba(255,255,255,0.05)' }, 
-                        ticks: { stepSize: 5, color: '#00f2ff', font: { family: 'Orbitron', size: 10 } } 
-                    },
-                    x: { ticks: { color: '#00f2ff', font: { family: 'Orbitron', size: 10 } } }
+                    y: { min: 0, max: 100, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { stepSize: 5, color: '#00f2ff', font: { family: 'Orbitron' } } },
+                    x: { ticks: { color: '#00f2ff', font: { family: 'Orbitron' } } }
                 }
             }
         });
-        document.getElementById('diagnostics-panel').scrollIntoView({ behavior: 'smooth' });
+        document.getElementById('diag-panel').scrollIntoView({ behavior: 'smooth' });
     }
 
-    function saveData() { localStorage.setItem('techmark_v12', JSON.stringify(db)); alert("Local Storage Synchronized Successfully."); }
+    function saveData() { localStorage.setItem('techmark_v13', JSON.stringify(db)); alert("Sync Success."); }
     window.onload = render;
 </script>
 </body>
