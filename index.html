@@ -3,104 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TechMark Elite | Command Center</title>
+    <title>EliteMark // Command Matrix</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root {
             --neon-cyan: #00f2ff;
             --neon-magenta: #bc13fe;
+            --neon-amber: #ffb700;
+            --neon-green: #39ff14;
+            --neon-red: #ff3131;
             --bg-black: #05070a;
             --border: rgba(0, 242, 255, 0.15);
-            --text-main: #e2e8f0;
-            --text-dim: #94a3b8;
-            --card-bg: rgba(255, 255, 255, 0.02);
+            --text-dim: #64748b;
         }
 
         * { box-sizing: border-box; }
         body { 
             font-family: 'Inter', sans-serif; margin: 0; display: flex; 
-            background: var(--bg-black); color: var(--text-main); height: 100vh; overflow: hidden;
+            background: var(--bg-black); color: #fff; height: 100vh; overflow: hidden;
         }
 
         /* Sidebar Navigation */
         nav { 
-            width: 280px; background: rgba(0,0,0,0.95); border-right: 1px solid var(--border);
+            width: 260px; background: rgba(0,0,0,0.95); border-right: 1px solid var(--border);
             padding: 2rem; display: flex; flex-direction: column; flex-shrink: 0;
         }
-        .logo { font-family: 'Orbitron', sans-serif; font-size: 0.9rem; color: var(--neon-cyan); margin-bottom: 3rem; letter-spacing: 2px; text-transform: uppercase; }
+        .logo { font-family: 'Orbitron', sans-serif; font-size: 0.85rem; color: var(--neon-cyan); margin-bottom: 3rem; letter-spacing: 2px; }
         .nav-btn { 
             width: 100%; padding: 12px; margin-bottom: 10px; background: transparent; border: 1px solid transparent;
             color: var(--text-dim); cursor: pointer; text-align: left; font-size: 0.85rem; border-radius: 4px;
         }
         .active-nav { border-color: var(--neon-cyan); color: var(--neon-cyan); background: rgba(0,242,255,0.05); }
 
-        /* Workspace */
-        main { flex: 1; padding: 3rem; overflow-y: auto; background-image: radial-gradient(circle at top right, #0a1018, #05070a); display: flex; flex-direction: column; }
-        .header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2.5rem; flex-shrink: 0; }
-        h1 { font-family: 'Orbitron', sans-serif; font-size: 1.8rem; margin: 0; text-transform: uppercase; }
+        /* Main Theatre */
+        main { flex: 1; padding: 2.5rem; overflow-y: auto; background: radial-gradient(circle at 50% 0%, #0d1621 0%, #05070a 100%); display: flex; flex-direction: column; }
+        .header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem; }
+        h1 { font-family: 'Orbitron', sans-serif; font-size: 1.6rem; margin: 0; }
 
-        /* SCROLLABLE MATRIX FIX */
+        /* Matrix Elements */
         .matrix-wrapper { 
-            flex: 1; 
-            overflow: hidden; 
-            display: flex; 
-            flex-direction: column;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            background: var(--card-bg);
+            flex: 1; overflow: hidden; display: flex; flex-direction: column;
+            border: 1px solid var(--border); border-radius: 8px; background: rgba(0,0,0,0.4);
         }
-        
-        .scroll-container { 
-            overflow: auto; 
-            width: 100%;
-        }
-
+        .scroll-container { overflow: auto; width: 100%; }
         table { border-collapse: separate; border-spacing: 0; width: max-content; min-width: 100%; }
         
-        /* Sticky Student Column */
+        /* Row Status: Fail Warning */
+        .status-fail { background: rgba(255, 49, 49, 0.08) !important; transition: background 0.3s; }
+        .status-fail .final-val { color: var(--neon-red) !important; text-shadow: 0 0 10px var(--neon-red); }
+
+        /* Sticky Personnel Column */
         th:first-child, td:first-child { 
-            position: sticky; 
-            left: 0; 
-            z-index: 10; 
-            background: #080c14; /* Solid color to prevent see-through when scrolling */
-            width: 250px;
-            border-right: 1px solid var(--border);
+            position: sticky; left: 0; z-index: 10; 
+            background: #080c14; width: 260px; border-right: 2px solid var(--neon-cyan);
+            color: var(--neon-green); font-weight: 600;
         }
         
-        th { 
-            text-align: left; padding: 20px; font-size: 0.7rem; color: var(--neon-cyan); 
-            text-transform: uppercase; border-bottom: 2px solid var(--border); 
-            position: relative; white-space: nowrap;
-        }
-        td { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        th { padding: 20px; font-family: 'Orbitron'; font-size: 0.7rem; color: var(--neon-cyan); border-bottom: 2px solid var(--border); position: relative; }
 
-        /* Deletion Trigger X */
-        .delete-btn { 
-            position: absolute; top: 6px; right: 8px; color: #ff4d4d; 
-            cursor: pointer; opacity: 0; font-size: 0.75rem; transition: 0.2s;
-        }
-        .student-delete { left: 8px; right: auto; top: 50%; transform: translateY(-50%); }
-        th:hover .delete-btn, td:hover .delete-btn { opacity: 0.6; }
-        .delete-btn:hover { opacity: 1 !important; }
-
-        /* Inputs */
+        /* Chromatic Inputs */
         [contenteditable] { outline: none; background: rgba(255,255,255,0.03); padding: 10px; border-radius: 4px; border: 1px solid transparent; }
-        [contenteditable]:focus { background: rgba(0,242,255,0.08); border-color: var(--neon-cyan); }
-        .score-input { font-family: 'Orbitron'; font-weight: 700; font-size: 1.1rem; text-align: center; width: 100%; }
-        .comment-input { font-size: 0.75rem; color: var(--text-dim); font-style: italic; display: block; margin-top: 8px; min-width: 200px; }
+        .score-input { font-family: 'Orbitron'; color: var(--neon-amber); font-weight: 700; font-size: 1.2rem; text-align: center; }
+        .score-input:focus { border-color: var(--neon-amber); background: rgba(255,183,0,0.08); }
+        .comment-input { font-size: 0.75rem; color: var(--text-dim); font-style: italic; display: block; margin-top: 8px; min-width: 220px; }
 
-        /* Result Styles */
-        .average-cell { font-family: 'Orbitron'; color: var(--neon-magenta); font-weight: 700; font-size: 1.2rem; text-align: center; min-width: 120px; }
-        .btn { padding: 10px 20px; border: 1px solid var(--neon-cyan); background: transparent; color: var(--neon-cyan); font-family: 'Orbitron'; font-size: 0.7rem; cursor: pointer; border-radius: 4px; text-transform: uppercase; white-space: nowrap; }
+        .final-val { font-family: 'Orbitron'; color: var(--neon-magenta); font-weight: 700; font-size: 1.3rem; text-align: center; min-width: 140px; }
+
+        /* UI Buttons */
+        .btn { padding: 10px 18px; border: 1px solid var(--neon-cyan); background: transparent; color: var(--neon-cyan); font-family: 'Orbitron'; font-size: 0.65rem; cursor: pointer; border-radius: 4px; text-transform: uppercase; }
         .btn:hover { background: var(--neon-cyan); color: #000; box-shadow: 0 0 15px var(--neon-cyan); }
+        .btn-diag { border-color: var(--neon-magenta); color: var(--neon-magenta); }
+        .btn-diag:hover { background: var(--neon-magenta); color: #fff; }
 
-        /* Diagnostics */
-        .diagnostics-area { margin-top: 2rem; display: grid; grid-template-columns: 350px 1fr; gap: 2rem; background: rgba(0,0,0,0.8); border: 1px solid var(--neon-magenta); padding: 2rem; border-radius: 8px; flex-shrink: 0; }
-        
-        /* Custom Scrollbar */
-        .scroll-container::-webkit-scrollbar { height: 10px; width: 10px; }
-        .scroll-container::-webkit-scrollbar-track { background: rgba(0,0,0,0.3); }
+        /* Collapsible Diagnostics */
+        .diag-container { 
+            margin-top: 2rem; background: rgba(0,0,0,0.95); border: 2px solid var(--neon-magenta); 
+            border-radius: 8px; display: none; overflow: hidden; animation: slideUp 0.3s ease-out;
+        }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .diag-header { padding: 12px 20px; background: rgba(188, 19, 254, 0.15); display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--neon-magenta); }
+        .diag-body { display: grid; grid-template-columns: 350px 1fr; gap: 2.5rem; padding: 2rem; }
+        .close-btn { color: var(--neon-magenta); cursor: pointer; font-size: 1.5rem; font-weight: bold; }
+
+        .del-x { position: absolute; top: 6px; right: 8px; color: var(--neon-red); cursor: pointer; opacity: 0.4; transition: 0.2s; }
+        .del-x:hover { opacity: 1; }
+
+        /* Scrollbar */
+        .scroll-container::-webkit-scrollbar { height: 10px; }
         .scroll-container::-webkit-scrollbar-thumb { background: var(--border); border-radius: 5px; }
         .scroll-container::-webkit-scrollbar-thumb:hover { background: var(--neon-cyan); }
     </style>
@@ -108,23 +98,23 @@
 <body>
 
 <nav>
-    <div class="logo">Terminal Gradebook</div>
+    <div class="logo">TERMINAL // v15.0</div>
     <div style="flex-grow: 1;">
         <button id="btn-TEJ3M" class="nav-btn active-nav" onclick="switchClass('TEJ3M')">Computer Engineering</button>
         <button id="btn-TDJ1O" class="nav-btn" onclick="switchClass('TDJ1O')">Technological Design</button>
     </div>
-    <button class="btn" style="width: 100%;" onclick="saveData()">Save Database</button>
+    <button class="btn" style="width: 100%; border-color: var(--neon-green); color: var(--neon-green);" onclick="saveData()">[ SYNC_TO_CLOUD ]</button>
 </nav>
 
 <main>
     <div class="header">
         <div>
-            <h1 id="view-title">Computer Engineering</h1>
-            <p style="color: var(--neon-cyan); font-size: 0.65rem; letter-spacing: 2px; margin-top: 5px; text-transform: uppercase;">Ontario Secondary Marking Standards</p>
+            <h1>Command Matrix</h1>
+            <p id="sub-node" style="color: var(--neon-green); font-size: 0.6rem; letter-spacing: 2px; margin-top: 5px;">NODE_ACCESS: COMPUTER ENGINEERING</p>
         </div>
         <div style="display:flex; gap:12px">
-            <button class="btn" onclick="addAssignment()">+ Add Assignment</button>
-            <button class="btn" onclick="addStudent()">+ Add Student</button>
+            <button class="btn" onclick="addAssignment()">+ ADD_VECTOR</button>
+            <button class="btn" onclick="addStudent()">+ ADD_SUBJECT</button>
         </div>
     </div>
 
@@ -137,15 +127,20 @@
         </div>
     </div>
 
-    <div id="diag-panel" class="diagnostics-area" style="display:none;">
-        <div>
-            <span style="font-family:'Orbitron'; font-size:0.7rem; color:var(--neon-magenta);">Student Diagnostics</span>
-            <h2 id="diag-name" style="margin:10px 0; font-weight:400; font-size:1.8rem;">---</h2>
-            <div id="diag-final" style="font-family:'Orbitron'; font-size:4rem; color:var(--neon-cyan);">0%</div>
-            <div id="diag-logs" style="margin-top:20px; font-size:0.85rem; max-height: 200px; overflow-y: auto;"></div>
+    <div id="diag-panel" class="diag-container">
+        <div class="diag-header">
+            <span style="font-family:'Orbitron'; font-size:0.7rem; color:var(--neon-magenta);">DIAGNOSTIC_LOG_MODE</span>
+            <span class="close-btn" onclick="closeDiagnostics()">×</span>
         </div>
-        <div style="height:350px; background:#000; padding:20px; border:1px solid var(--border);">
-            <canvas id="gradeChart"></canvas>
+        <div class="diag-body">
+            <div>
+                <h2 id="diag-name" style="margin:0 0 10px 0; font-weight:400; font-size:1.8rem;">---</h2>
+                <div id="diag-final" style="font-family:'Orbitron'; font-size:4.5rem; color:var(--neon-magenta); line-height: 1;">0%</div>
+                <div id="diag-logs" style="margin-top:25px; max-height: 250px; overflow-y: auto;"></div>
+            </div>
+            <div style="height:350px; background:rgba(0,0,0,0.5); padding:20px; border:1px solid rgba(188,19,254,0.3);">
+                <canvas id="gradeChart"></canvas>
+            </div>
         </div>
     </div>
 </main>
@@ -154,14 +149,14 @@
     let currentClass = 'TEJ3M';
     let chartObj = null;
 
-    let db = JSON.parse(localStorage.getItem('techmark_v13')) || {
+    let db = JSON.parse(localStorage.getItem('techmark_v15')) || {
         'TEJ3M': {
-            tasks: [{name: "Initial Project", w: 20}, {name: "Technical Lab", w: 30}],
-            students: [{name: "Marcus Vane", scores: [{g: 85, n: "Consistent logic."}, {g: 90, n: "High efficiency."}]}]
+            tasks: [{name: "Digital Circuits", w: 40}, {name: "Network Defense", w: 60}],
+            students: [{name: "Marcus Vane", scores: [{g: 82, n: "Understands signal flow."}, {g: 45, n: "Packet loss on final step."}]}]
         },
         'TDJ1O': {
-            tasks: [{name: "Concept Design", w: 50}],
-            students: [{name: "Elena Rodriguez", scores: [{g: 92, n: "Strong visual balance."}]}]
+            tasks: [{name: "CAD Blueprint", w: 100}],
+            students: [{name: "Elena Rodriguez", scores: [{g: 92, n: "Professional tolerances."}]}]
         }
     };
 
@@ -169,7 +164,8 @@
         currentClass = id;
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active-nav'));
         document.getElementById('btn-'+id).classList.add('active-nav');
-        document.getElementById('diag-panel').style.display = 'none';
+        document.getElementById('sub-node').innerText = `NODE_ACCESS: ${id === 'TEJ3M' ? 'COMPUTER ENGINEERING' : 'TECHNOLOGICAL DESIGN'}`;
+        closeDiagnostics();
         render();
     }
 
@@ -178,27 +174,25 @@
         const head = document.getElementById('h-row');
         const body = document.getElementById('b-rows');
 
-        // Header
-        let hContent = `<tr><th>Student Personnel</th>`;
+        let hContent = `<tr><th>Subject Personnel</th>`;
         course.tasks.forEach((t, i) => {
             hContent += `<th style="width:250px">
-                <span class="delete-btn" onclick="deleteTask(${i})">×</span>
+                <span class="del-x" onclick="deleteTask(${i})">×</span>
                 <div contenteditable="true" onblur="updateTask(${i},'name',this.innerText)">${t.name}</div>
-                <div style="color:var(--neon-cyan); font-size:0.6rem; margin-top:4px;" contenteditable="true" onblur="updateTask(${i},'w',this.innerText)">${t.w}% Weight</div>
+                <div style="color:var(--neon-green); font-size:0.6rem; margin-top:4px;" contenteditable="true" onblur="updateTask(${i},'w',this.innerText)">${t.w}%_WEIGHT</div>
             </th>`;
         });
-        hContent += `<th class="average-cell">Weighted Average</th><th>Actions</th></tr>`;
+        hContent += `<th class="final-val" style="color:var(--neon-magenta)">Final_Average</th><th>Actions</th></tr>`;
         head.innerHTML = hContent;
 
-        // Rows
         body.innerHTML = '';
         course.students.forEach((s, sIdx) => {
             let tr = document.createElement('tr');
             let wSum = 0; let wUsed = 0;
 
             let rContent = `<td>
-                <span class="delete-btn student-delete" onclick="deleteStudent(${sIdx})">×</span>
-                <div contenteditable="true" class="kb-nav" onblur="updateSName(${sIdx},this.innerText)" style="font-weight:600; color:var(--neon-cyan)">${s.name}</div>
+                <span class="del-x" style="left:5px; right:auto;" onclick="deleteStudent(${sIdx})">×</span>
+                <div contenteditable="true" class="kb-nav" onblur="updateSName(${sIdx},this.innerText)">${s.name}</div>
             </td>`;
             
             course.tasks.forEach((t, tIdx) => {
@@ -212,25 +206,39 @@
             });
 
             let final = wUsed > 0 ? (wSum / wUsed).toFixed(1) : 0;
-            rContent += `<td class="average-cell" id="final-${sIdx}">${final}%</td>`;
-            rContent += `<td><button class="btn" onclick="viewDiagnostics(${sIdx})">Diagnostics</button></td>`;
+            if(final < 50) tr.classList.add('status-fail');
+
+            rContent += `<td class="final-val" id="final-${sIdx}">${final}%</td>`;
+            rContent += `<td><button class="btn btn-diag" onclick="viewDiagnostics(${sIdx})">View Diagnostics</button></td>`;
             
             tr.innerHTML = rContent;
             body.appendChild(tr);
         });
-
         setupEnterNav();
     }
 
+    function liveUpdate(sIdx, tIdx, val) {
+        let v = parseFloat(val) || 0;
+        db[currentClass].students[sIdx].scores[tIdx].g = v;
+        let ws = 0, wu = 0;
+        db[currentClass].tasks.forEach((t, i) => {
+            ws += (db[currentClass].students[sIdx].scores[i].g * (t.w/100));
+            wu += (t.w/100);
+        });
+        let final = (wu > 0 ? (ws/wu).toFixed(1) : 0);
+        const cell = document.getElementById(`final-${sIdx}`);
+        cell.innerText = final + "%";
+        
+        const row = cell.closest('tr');
+        if(final < 50) row.classList.add('status-fail'); else row.classList.remove('status-fail');
+    }
+
     function setupEnterNav() {
-        const table = document.getElementById('grade-matrix');
-        table.addEventListener('keydown', (e) => {
+        document.getElementById('grade-matrix').addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 e.preventDefault();
-                const cell = e.target;
-                const td = cell.closest('td');
-                const row = td.parentElement;
-                const colIndex = Array.from(row.cells).indexOf(td);
+                const td = e.target.closest('td');
+                const row = td.parentElement, colIndex = Array.from(row.cells).indexOf(td);
                 const nextRow = row.nextElementSibling;
                 if (nextRow) {
                     const target = nextRow.cells[colIndex].querySelector('.kb-nav');
@@ -240,49 +248,28 @@
         });
     }
 
-    function liveUpdate(sIdx, tIdx, val) {
-        let v = parseFloat(val) || 0;
-        db[currentClass].students[sIdx].scores[tIdx].g = v;
-        let ws = 0; let wu = 0;
-        db[currentClass].tasks.forEach((t, i) => {
-            ws += (db[currentClass].students[sIdx].scores[i].g * (t.w/100));
-            wu += (t.w/100);
-        });
-        document.getElementById(`final-${sIdx}`).innerText = (wu > 0 ? (ws/wu).toFixed(1) : 0) + "%";
-    }
-
     function updateNote(s, t, v) { db[currentClass].students[s].scores[t].n = v; }
     function updateTask(i, f, v) { db[currentClass].tasks[i][f] = f === 'w' ? (parseFloat(v) || 0) : v; render(); }
     function updateSName(i, v) { db[currentClass].students[i].name = v; }
-
-    function addAssignment() {
-        db[currentClass].tasks.push({name: "New Assignment", w: 10});
-        db[currentClass].students.forEach(s => s.scores.push({g: 0, n: ""}));
-        render();
-    }
-
-    function addStudent() {
-        db[currentClass].students.push({name: "New Student", scores: db[currentClass].tasks.map(()=>({g:0, n:""}))});
-        render();
-    }
-
-    function deleteTask(i) { if(confirm("Permanently delete assignment?")) { db[currentClass].tasks.splice(i, 1); db[currentClass].students.forEach(s => s.scores.splice(i, 1)); render(); } }
-    function deleteStudent(i) { if(confirm("Permanently delete student?")) { db[currentClass].students.splice(i, 1); render(); } }
+    function addAssignment() { db[currentClass].tasks.push({name: "New Project", w: 10}); db[currentClass].students.forEach(s => s.scores.push({g: 0, n: ""})); render(); }
+    function addStudent() { db[currentClass].students.push({name: "New Student", scores: db[currentClass].tasks.map(()=>({g:0, n:""}))}); render(); }
+    function deleteTask(i) { if(confirm("Purge vector?")) { db[currentClass].tasks.splice(i, 1); db[currentClass].students.forEach(s => s.scores.splice(i, 1)); render(); } }
+    function deleteStudent(i) { if(confirm("Purge student?")) { db[currentClass].students.splice(i, 1); render(); } }
 
     function viewDiagnostics(idx) {
         const s = db[currentClass].students[idx];
         const tasks = db[currentClass].tasks;
-        document.getElementById('diag-panel').style.display = 'grid';
-        document.getElementById('diag-name').innerText = s.name;
+        document.getElementById('diag-panel').style.display = 'block';
+        document.getElementById('diag-name').innerText = s.name.toUpperCase();
         document.getElementById('diag-final').innerText = document.getElementById(`final-${idx}`).innerText;
 
         const logCont = document.getElementById('diag-logs');
         logCont.innerHTML = '';
         s.scores.forEach((score, i) => {
             if(score.n && score.n !== "Anecdotal evidence...") {
-                logCont.innerHTML += `<div style="margin-bottom:10px; border-left:2px solid var(--neon-cyan); padding-left:10px;">
-                    <div style="font-size:0.6rem; color:var(--neon-cyan); font-family:'Orbitron';">${tasks[i].name} (${score.g}%)</div>
-                    <div>${score.n}</div>
+                logCont.innerHTML += `<div style="margin-bottom:12px; border-left:3px solid var(--neon-magenta); padding-left:12px;">
+                    <div style="font-size:0.65rem; color:var(--neon-magenta); font-family:'Orbitron';">${tasks[i].name} — Score: ${score.g}%</div>
+                    <div style="font-size:0.85rem; color:#fff; margin-top:2px;">${score.n}</div>
                 </div>`;
             }
         });
@@ -295,8 +282,8 @@
                 labels: tasks.map(t => t.name),
                 datasets: [{
                     data: s.scores.map(g => g.g),
-                    backgroundColor: 'rgba(0, 242, 255, 0.4)',
-                    borderColor: '#00f2ff',
+                    backgroundColor: 'rgba(188, 19, 254, 0.4)',
+                    borderColor: '#bc13fe',
                     borderWidth: 2
                 }]
             },
@@ -304,15 +291,16 @@
                 responsive: true, maintainAspectRatio: false,
                 plugins: { legend: { display: false } },
                 scales: { 
-                    y: { min: 0, max: 100, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { stepSize: 5, color: '#00f2ff', font: { family: 'Orbitron' } } },
-                    x: { ticks: { color: '#00f2ff', font: { family: 'Orbitron' } } }
+                    y: { min: 0, max: 100, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { stepSize: 5, color: '#bc13fe', font: { family: 'Orbitron' } } },
+                    x: { ticks: { color: '#bc13fe', font: { family: 'Orbitron' } } }
                 }
             }
         });
         document.getElementById('diag-panel').scrollIntoView({ behavior: 'smooth' });
     }
 
-    function saveData() { localStorage.setItem('techmark_v13', JSON.stringify(db)); alert("Sync Success."); }
+    function closeDiagnostics() { document.getElementById('diag-panel').style.display = 'none'; }
+    function saveData() { localStorage.setItem('techmark_v15', JSON.stringify(db)); alert("DATABASE_SYNC_SUCCESSFUL"); }
     window.onload = render;
 </script>
 </body>
