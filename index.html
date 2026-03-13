@@ -3,77 +3,156 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TechMark Pro | Dynamic Edition</title>
+    <title>TechMark Elite | Ontario</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #6366f1; --bg: #f8fafc; --sidebar: #ffffff; --text: #0f172a; --border: #f1f5f9; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; display: flex; background: var(--bg); color: var(--text); }
-        
-        /* Sidebar */
-        nav { width: 280px; height: 100vh; background: var(--sidebar); border-right: 1px solid var(--border); padding: 2rem; position: fixed; box-sizing: border-box; }
-        .nav-btn { width: 100%; padding: 14px; margin-bottom: 10px; background: transparent; border: none; border-radius: 12px; cursor: pointer; text-align: left; font-weight: 600; color: #64748b; }
-        .active-nav { background: #e0e7ff; color: var(--primary); }
+        :root {
+            --primary: #4f46e5;
+            --primary-light: #eef2ff;
+            --danger: #f87171;
+            --bg: #fbfcfd;
+            --card: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --radius: 12px;
+        }
 
-        /* Content */
-        main { margin-left: 280px; padding: 3rem; width: 100%; max-width: 1300px; }
-        .card { background: #fff; border-radius: 20px; padding: 2rem; border: 1px solid var(--border); box-shadow: 0 4px 20px rgba(0,0,0,0.03); margin-bottom: 2rem; }
-        
-        /* Table Layout */
-        .table-container { overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; }
-        th { text-align: left; padding: 15px; color: #64748b; font-size: 0.75rem; text-transform: uppercase; border-bottom: 2px solid var(--border); }
-        td { padding: 15px; border-bottom: 1px solid var(--border); }
+        * { box-sizing: border-box; }
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            margin: 0; display: flex; 
+            background: var(--bg); color: var(--text-main); 
+            line-height: 1.5;
+        }
 
-        /* Inputs & Buttons */
-        .btn { padding: 10px 18px; border-radius: 10px; border: none; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        /* Sidebar Navigation */
+        nav { 
+            width: 280px; height: 100vh; background: var(--card); 
+            border-right: 1px solid var(--border); padding: 2.5rem 1.5rem; 
+            position: fixed; display: flex; flex-direction: column;
+        }
+
+        .logo { font-weight: 800; font-size: 1.25rem; margin-bottom: 2.5rem; color: var(--primary); letter-spacing: -0.5px; }
+        
+        .nav-group { margin-bottom: 2rem; }
+        .nav-label { font-size: 0.7rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1rem; padding-left: 10px; }
+
+        .nav-btn { 
+            width: 100%; padding: 12px 15px; margin-bottom: 6px; 
+            background: transparent; border: none; border-radius: var(--radius); 
+            cursor: pointer; text-align: left; font-weight: 600; color: var(--text-muted);
+            transition: all 0.2s ease;
+        }
+        .nav-btn:hover { background: var(--primary-light); color: var(--primary); }
+        .active-nav { background: var(--primary-light) !important; color: var(--primary); }
+
+        /* Main Workspace */
+        main { margin-left: 280px; padding: 3rem 4rem; width: 100%; }
+
+        .top-bar { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 3rem; }
+        
+        /* Table Card */
+        .card { 
+            background: var(--card); border-radius: 16px; 
+            border: 1px solid var(--border);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02), 0 10px 15px -3px rgba(0,0,0,0.03);
+            overflow: hidden;
+            margin-bottom: 2.5rem;
+        }
+
+        table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+        
+        th { 
+            background: #f8fafc; padding: 16px; 
+            text-align: left; font-size: 0.75rem; 
+            font-weight: 700; color: var(--text-muted);
+            border-bottom: 1px solid var(--border);
+        }
+
+        td { padding: 16px; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+        
+        /* Clean Column Headers */
+        .col-header { display: flex; flex-direction: column; gap: 4px; position: relative; }
+        .weight-input { 
+            font-size: 0.65rem; color: var(--primary); 
+            border: none; background: #e0e7ff; 
+            width: fit-content; padding: 2px 6px; border-radius: 4px; font-weight: 800;
+        }
+
+        .del-col { 
+            position: absolute; right: -10px; top: -10px; 
+            opacity: 0; transition: 0.2s; cursor: pointer;
+            background: var(--danger); color: white; border: none;
+            border-radius: 50%; width: 18px; height: 18px; font-size: 10px;
+        }
+        th:hover .del-col { opacity: 1; }
+
+        /* Controls */
+        .btn { 
+            padding: 10px 20px; border-radius: 10px; border: none; 
+            font-weight: 600; cursor: pointer; font-size: 0.85rem;
+            transition: 0.2s;
+        }
         .btn-primary { background: var(--primary); color: white; }
-        .btn-outline { background: transparent; border: 1px solid var(--border); color: #64748b; margin-right: 8px; }
-        .btn-danger { background: #fee2e2; color: #ef4444; font-size: 0.7rem; }
-        
-        [contenteditable="true"] { outline: none; padding: 4px; border-radius: 4px; transition: 0.2s; }
-        [contenteditable="true"]:focus { background: #f5f3ff; color: var(--primary); }
+        .btn-primary:hover { filter: brightness(1.1); }
+        .btn-secondary { background: #f1f5f9; color: var(--text-main); margin-right: 10px; }
 
-        /* Analytics View */
-        .analytics-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 2rem; }
+        /* Graph Section */
+        .analytics-container { display: grid; grid-template-columns: 350px 1fr; gap: 3rem; padding: 2rem; }
+        .final-badge { 
+            font-size: 3rem; font-weight: 800; color: var(--primary); 
+            margin: 1rem 0; letter-spacing: -2px; 
+        }
     </style>
 </head>
 <body>
 
 <nav>
-    <h2 style="color: var(--primary); margin-bottom: 2rem;">TechMark Pro</h2>
-    <button id="btn-TEJ3M" class="nav-btn active-nav" onclick="switchClass('TEJ3M')">Comp Eng (TEJ3M)</button>
-    <button id="btn-TDJ1O" class="nav-btn" onclick="switchClass('TDJ1O')">Tech Design (TDJ1O)</button>
-    <div style="margin-top: 3rem; border-top: 1px solid var(--border); padding-top: 2rem;">
-        <button class="btn btn-primary" style="width: 100%;" onclick="saveToDisk()">💾 Save All Data</button>
+    <div class="logo">TECHO-MARK v4</div>
+    
+    <div class="nav-group">
+        <div class="nav-label">Current Courses</div>
+        <button id="btn-TEJ3M" class="nav-btn active-nav" onclick="switchClass('TEJ3M')">Comp Eng (TEJ3M)</button>
+        <button id="btn-TDJ1O" class="nav-btn" onclick="switchClass('TDJ1O')">Tech Design (TDJ1O)</button>
+    </div>
+
+    <div style="margin-top: auto;">
+        <button class="btn btn-primary" style="width: 100%;" onclick="saveData()">Sync to Local Storage</button>
     </div>
 </nav>
 
 <main>
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <div class="top-bar">
         <div>
-            <h1 id="view-title" style="margin:0;">Class Gradebook</h1>
-            <p id="view-code" style="color: #64748b; margin: 5px 0 0;">TEJ3M</p>
+            <h1 id="view-title" style="margin:0; font-size: 1.75rem; font-weight: 800;">Computer Engineering</h1>
+            <p id="view-code" style="color: var(--text-muted); margin: 4px 0 0; font-weight: 500;">Class Gradebook & Analytics</p>
         </div>
         <div>
-            <button class="btn btn-outline" onclick="addAssignment()">+ Add Assignment</button>
+            <button class="btn btn-secondary" onclick="addAssignment()">+ Add Project</button>
             <button class="btn btn-primary" onclick="addStudent()">+ Add Student</button>
         </div>
     </div>
 
     <div class="card">
-        <div class="table-container">
-            <table id="main-table">
-                <thead id="table-head"></thead>
-                <tbody id="table-body"></tbody>
-            </table>
-        </div>
+        <table id="main-table">
+            <thead id="table-head"></thead>
+            <tbody id="table-body"></tbody>
+        </table>
     </div>
 
-    <div id="analytics" class="card" style="display:none;">
-        <div class="analytics-grid">
-            <div id="student-info" style="text-align: center; border-right: 1px solid var(--border);"></div>
-            <canvas id="gradeChart" height="120"></canvas>
+    <div id="analytics-card" class="card" style="display:none; border: 2px solid var(--primary-light);">
+        <div class="analytics-container">
+            <div id="student-summary">
+                <p style="text-transform:uppercase; font-size:0.7rem; font-weight:800; color:var(--text-muted); margin:0;">Student Overview</p>
+                <h2 id="summary-name" style="margin: 0.5rem 0 0;">Student Name</h2>
+                <div class="final-badge" id="summary-grade">0%</div>
+                <p id="summary-status" style="font-size: 0.85rem; color: var(--text-muted);"></p>
+            </div>
+            <div style="height: 250px;">
+                <canvas id="gradeChart"></canvas>
+            </div>
         </div>
     </div>
 </main>
@@ -82,15 +161,14 @@
     let currentClass = 'TEJ3M';
     let chartObj = null;
 
-    // Data Structure: Assignments list + Student list
-    let data = JSON.parse(localStorage.getItem('techmark_v3')) || {
+    let db = JSON.parse(localStorage.getItem('techmark_v4')) || {
         'TEJ3M': {
-            assignments: ["Breadboard Intro", "Safety Quiz", "Arduino Project"],
-            students: [{ name: "Marcus Vane", grades: [85, 90, 88] }]
+            assigns: [{name: "Safety", weight: 10}, {name: "Arduino", weight: 40}],
+            students: [{name: "Marcus Vane", marks: [95, 88]}]
         },
         'TDJ1O': {
-            assignments: ["Sketching 101", "CAD Model"],
-            students: [{ name: "Elena Rodriguez", grades: [92, 84] }]
+            assigns: [{name: "Sketching", weight: 20}],
+            students: [{name: "Elena Rodriguez", marks: [82]}]
         }
     };
 
@@ -98,123 +176,132 @@
         currentClass = code;
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active-nav'));
         document.getElementById('btn-' + code).classList.add('active-nav');
+        document.getElementById('view-title').innerText = code.startsWith('TEJ') ? "Computer Engineering" : "Technological Design";
         document.getElementById('view-code').innerText = code;
-        document.getElementById('analytics').style.display = 'none';
+        document.getElementById('analytics-card').style.display = 'none';
         render();
     }
 
     function render() {
+        const course = db[currentClass];
         const head = document.getElementById('table-head');
         const body = document.getElementById('table-body');
-        const course = data[currentClass];
 
-        // 1. Render Header
-        let headHTML = `<tr><th>Student Name</th>`;
-        course.assignments.forEach((assign, idx) => {
-            headHTML += `<th>
-                <div contenteditable="true" onblur="updateAssignName(${idx}, this.innerText)">${assign}</div>
-                <button class="btn-danger" onclick="deleteAssignment(${idx})" style="padding:2px 5px; margin-top:5px;">×</button>
+        // Render Header with weights
+        let hHTML = `<tr><th style="width:250px">Student Name</th>`;
+        course.assigns.forEach((a, i) => {
+            hHTML += `<th>
+                <div class="col-header">
+                    <button class="del-col" onclick="deleteAssign(${i})">×</button>
+                    <div contenteditable="true" onblur="updateAssign(${i}, 'name', this.innerText)">${a.name}</div>
+                    <div class="weight-input" contenteditable="true" onblur="updateAssign(${i}, 'weight', this.innerText)">${a.weight}%</div>
+                </div>
             </th>`;
         });
-        headHTML += `<th>Final Avg</th><th>Actions</th></tr>`;
-        head.innerHTML = headHTML;
+        hHTML += `<th style="width:100px">Final</th><th style="width:120px; text-align:right">Options</th></tr>`;
+        head.innerHTML = hHTML;
 
-        // 2. Render Rows
+        // Render Rows
         body.innerHTML = '';
         course.students.forEach((s, sIdx) => {
-            let rowHTML = `<td contenteditable="true" onblur="updateStudentName(${sIdx}, this.innerText)">${s.name}</td>`;
+            let tr = document.createElement('tr');
+            let rowHTML = `<td contenteditable="true" onblur="updateStudent(${sIdx}, this.innerText)" style="font-weight:600">${s.name}</td>`;
             
-            let sum = 0;
-            course.assignments.forEach((_, aIdx) => {
-                let grade = s.grades[aIdx] || 0;
-                sum += grade;
-                rowHTML += `<td contenteditable="true" onblur="updateGrade(${sIdx}, ${aIdx}, this.innerText)">${grade}</td>`;
+            let totalWeighted = 0;
+            let totalWeightsUsed = 0;
+
+            course.assigns.forEach((a, aIdx) => {
+                let m = s.marks[aIdx] || 0;
+                totalWeighted += (m * (a.weight / 100));
+                totalWeightsUsed += a.weight;
+                rowHTML += `<td contenteditable="true" onblur="updateMark(${sIdx}, ${aIdx}, this.innerText)">${m}</td>`;
             });
 
-            let avg = (sum / Math.max(course.assignments.length, 1)).toFixed(1);
-            rowHTML += `<td style="font-weight:800; color:var(--primary)">${avg}%</td>`;
-            rowHTML += `<td>
-                <button class="btn btn-outline" style="font-size:0.7rem;" onclick="viewStats(${sIdx})">Analytics</button>
-                <button class="btn-danger" onclick="deleteStudent(${sIdx})">Delete</button>
-            </td>`;
+            // If weights don't add to 100, we normalize to show current standing
+            let finalAvg = totalWeightsUsed > 0 ? ((totalWeighted / totalWeightsUsed) * 100).toFixed(1) : 0;
             
-            let tr = document.createElement('tr');
+            rowHTML += `<td style="font-weight:800; color:var(--primary)">${finalAvg}%</td>`;
+            rowHTML += `<td style="text-align:right">
+                <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.7rem;" onclick="viewStats(${sIdx})">ANALYTICS</button>
+            </td>`;
             tr.innerHTML = rowHTML;
             body.appendChild(tr);
         });
     }
 
-    // Logic Functions
+    // Handlers
+    function updateMark(sIdx, aIdx, val) { db[currentClass].students[sIdx].marks[aIdx] = parseFloat(val) || 0; render(); }
+    function updateAssign(i, field, val) { 
+        db[currentClass].assigns[i][field] = field === 'weight' ? (parseFloat(val) || 0) : val; 
+        render(); 
+    }
+    function updateStudent(i, val) { db[currentClass].students[i].name = val; }
+
     function addAssignment() {
-        data[currentClass].assignments.push("New Project");
-        data[currentClass].students.forEach(s => s.grades.push(0));
+        db[currentClass].assigns.push({name: "New Project", weight: 10});
+        db[currentClass].students.forEach(s => s.marks.push(0));
         render();
     }
 
     function addStudent() {
-        let emptyGrades = data[currentClass].assignments.map(() => 0);
-        data[currentClass].students.push({ name: "New Student", grades: emptyGrades });
+        let m = db[currentClass].assigns.map(() => 0);
+        db[currentClass].students.push({name: "New Student", marks: m});
         render();
     }
 
-    function updateGrade(sIdx, aIdx, val) {
-        data[currentClass].students[sIdx].grades[aIdx] = parseFloat(val) || 0;
-        render();
-    }
-
-    function updateAssignName(idx, val) {
-        data[currentClass].assignments[idx] = val;
-    }
-
-    function updateStudentName(idx, val) {
-        data[currentClass].students[idx].name = val;
-    }
-
-    function deleteStudent(idx) {
-        if(confirm("Delete this student?")) {
-            data[currentClass].students.splice(idx, 1);
-            render();
-        }
-    }
-
-    function deleteAssignment(idx) {
-        if(confirm("Delete this entire project column?")) {
-            data[currentClass].assignments.splice(idx, 1);
-            data[currentClass].students.forEach(s => s.grades.splice(idx, 1));
+    function deleteAssign(i) {
+        if(confirm("Delete this column?")) {
+            db[currentClass].assigns.splice(i, 1);
+            db[currentClass].students.forEach(s => s.marks.splice(i, 1));
             render();
         }
     }
 
     function viewStats(idx) {
-        const s = data[currentClass].students[idx];
-        const labels = data[currentClass].assignments;
-        document.getElementById('analytics').style.display = 'block';
-        document.getElementById('student-info').innerHTML = `
-            <h3 style="margin:0;">${s.name}</h3>
-            <p style="color:var(--primary); font-weight:800; font-size:2rem;">${(s.grades.reduce((a,b)=>a+b,0)/labels.length).toFixed(1)}%</p>
-        `;
+        const s = db[currentClass].students[idx];
+        const labels = db[currentClass].assigns.map(a => a.name);
+        document.getElementById('analytics-card').style.display = 'block';
+        document.getElementById('summary-name').innerText = s.name;
+        
+        // Final Grade Calculation for Header
+        let tw = 0; let twu = 0;
+        db[currentClass].assigns.forEach((a, i) => { tw += (s.marks[i] * (a.weight/100)); twu += a.weight; });
+        let final = twu > 0 ? ((tw/twu)*100).toFixed(1) : 0;
+        document.getElementById('summary-grade').innerText = final + "%";
 
         if(chartObj) chartObj.destroy();
-        chartObj = new Chart(document.getElementById('gradeChart'), {
+        const ctx = document.getElementById('gradeChart').getContext('2d');
+        chartObj = new Chart(ctx, {
             type: 'line',
             data: {
                 labels: labels,
                 datasets: [{
-                    label: 'Mark History',
-                    data: s.grades,
-                    borderColor: '#6366f1',
-                    backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                    label: 'Score',
+                    data: s.marks,
+                    borderColor: '#4f46e5',
+                    borderWidth: 3,
+                    pointBackgroundColor: '#fff',
+                    pointBorderWidth: 2,
+                    tension: 0.3,
                     fill: true,
-                    tension: 0.4
+                    backgroundColor: 'rgba(79, 70, 229, 0.05)'
                 }]
             },
-            options: { plugins: { legend: { display: false } }, scales: { y: { min: 0, max: 100 } } }
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, max: 100, grid: { color: '#f1f5f9' } },
+                    x: { grid: { display: false } }
+                }
+            }
         });
     }
 
-    function saveToDisk() {
-        localStorage.setItem('techmark_v3', JSON.stringify(data));
-        alert("Data synced to browser memory!");
+    function saveData() {
+        localStorage.setItem('techmark_v4', JSON.stringify(db));
+        alert("Synced successfully.");
     }
 
     window.onload = render;
