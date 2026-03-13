@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>EliteMark // v34.0</title>
+    <title>EliteMark // v35.0</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <style>
@@ -37,8 +37,7 @@
         .icon-btn:hover { opacity: 1; filter: drop-shadow(0 0 5px var(--ui-cyan)); }
         
         .btn { padding: 6px 12px; background: transparent; border: 1px solid var(--ui-cyan); color: var(--ui-cyan); font-family: 'Orbitron'; font-size: 0.6rem; cursor: pointer; border-radius: 3px; }
-        .del-x { color: var(--ui-red); cursor: pointer; font-weight: bold; opacity: 0.4; }
-        .del-x:hover { opacity: 1; }
+        .del-x { color: var(--ui-red); cursor: pointer; font-weight: bold; opacity: 0.4; margin-right: 5px; }
 
         #graph-panel { height: 320px; background: #080a0d; border-top: 1px solid var(--ui-magenta); padding: 15px; display: none; }
         .stats-badge { font-family: 'Orbitron'; font-size: 0.7rem; padding: 4px 8px; border-radius: 3px; background: rgba(255,255,255,0.05); }
@@ -47,7 +46,7 @@
 <body>
 
 <nav>
-    <div style="font-family:'Orbitron'; color:var(--ui-cyan); font-size:0.75rem; margin-bottom:1.5rem;">ELITEMARK_V34</div>
+    <div style="font-family:'Orbitron'; color:var(--ui-cyan); font-size:0.75rem; margin-bottom:1.5rem;">ELITEMARK_V35</div>
     <div style="display:flex; gap:5px; margin-bottom:1rem;">
         <button class="btn" style="flex:1" onclick="addClass()">+ CLASS</button>
         <button class="btn" style="flex:1" onclick="cloneClass()">CLONE</button>
@@ -89,8 +88,8 @@
 <script>
     let activeClass = 'TEJ3M';
     let myChart = null;
-    let data = JSON.parse(localStorage.getItem('eliteMark_v34')) || {
-        'TEJ3M': { tasks: [{n: "Lab 1", w: 100}], students: [{n: "Student Example", s: [0], c: [""]}] }
+    let data = JSON.parse(localStorage.getItem('eliteMark_v35')) || {
+        'TEJ3M': { tasks: [{n: "Lab 1", w: 100}], students: [{n: "Student Name", s: [0], c: [""]}] }
     };
 
     document.addEventListener('keydown', e => {
@@ -99,7 +98,7 @@
         }
     });
 
-    function sync() { localStorage.setItem('eliteMark_v34', JSON.stringify(data)); render(); }
+    function sync() { localStorage.setItem('eliteMark_v35', JSON.stringify(data)); render(); }
 
     function getStudentAvg(s, tasks) {
         let avg = 0;
@@ -127,7 +126,13 @@
 
         let h = `<tr><th>Personnel</th>`;
         current.tasks.forEach((t, i) => {
-            h += `<th><span class="del-x" onclick="delTask(${i})">×</span>
+            h += `<th>
+                <div style="display:flex; align-items:center; justify-content:center;">
+                    <span class="del-x" onclick="delTask(${i})">×</span>
+                    <button class="icon-btn" style="padding:0; margin-right:5px;" onclick="showAssignmentDist(${i})">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--ui-cyan)" stroke-width="2"><path d="M21.21 15.89A10 10 0 1 1 8 2.83M22 12A10 10 0 0 0 12 2v10z"/></svg>
+                    </button>
+                </div>
                 <div contenteditable onblur="data['${activeClass}'].tasks[${i}].n=this.innerText;sync()">${t.n}</div>
                 <div style="color:var(--ui-cyan); font-size:0.55rem;" contenteditable onblur="data['${activeClass}'].tasks[${i}].w=parseInt(this.innerText)||0;sync()">${t.w}%</div></th>`;
         });
@@ -161,9 +166,8 @@
         const s = current.students[si];
         const studentAvg = getStudentAvg(s, current.tasks);
         const classAvg = getClassAvg();
-
-        // Section for Class Standing
         const diff = studentAvg - classAvg;
+
         const standingEl = document.getElementById('class-standing');
         standingEl.innerText = `CLASS AVG: ${classAvg.toFixed(1)}% | ${diff >= 0 ? 'ABOVE' : 'BELOW'} BY ${Math.abs(diff).toFixed(1)}%`;
         standingEl.style.color = diff >= 0 ? 'var(--ui-cyan)' : 'var(--ui-red)';
@@ -173,7 +177,34 @@
         const colors = [...current.tasks.map(() => 'rgba(0, 242, 255, 0.2)'), 'rgba(188, 19, 254, 0.5)'];
         const borders = [...current.tasks.map(() => '#00f2ff'), '#bc13fe'];
 
-        document.getElementById('chart-label').innerText = s.n.toUpperCase();
+        updateChart(labels, scores, colors, borders, s.n.toUpperCase());
+    }
+
+    function showAssignmentDist(ti) {
+        document.getElementById('graph-panel').style.display = 'block';
+        const current = data[activeClass];
+        const taskName = current.tasks[ti].n;
+        const allScores = current.students.map(s => s.s[ti] || 0);
+        
+        // Distribution Bins
+        const bins = ["0-59", "60-69", "70-79", "80-89", "90-100"];
+        const counts = [0, 0, 0, 0, 0];
+        allScores.forEach(score => {
+            if (score < 60) counts[0]++;
+            else if (score < 70) counts[1]++;
+            else if (score < 80) counts[2]++;
+            else if (score < 90) counts[3]++;
+            else counts[4]++;
+        });
+
+        document.getElementById('class-standing').innerText = `DISTRIBUTION: ${allScores.length} STUDENTS`;
+        document.getElementById('class-standing').style.color = 'var(--ui-cyan)';
+
+        updateChart(bins, counts, 'rgba(0, 242, 255, 0.3)', '#00f2ff', `DISTRIBUTION: ${taskName.toUpperCase()}`, true);
+    }
+
+    function updateChart(labels, scores, colors, borders, title, isDist = false) {
+        document.getElementById('chart-label').innerText = title;
         if(myChart) myChart.destroy();
         myChart = new Chart(document.getElementById('chartObj'), {
             type: 'bar',
@@ -182,7 +213,11 @@
                 responsive: true, maintainAspectRatio: false,
                 plugins: { legend: { display: false } },
                 scales: { 
-                    y: { min: 0, max: 100, ticks: { stepSize: 5, color: '#64748b' } },
+                    y: { 
+                        min: 0, 
+                        max: isDist ? Math.max(...scores) + 1 : 100, 
+                        ticks: { stepSize: isDist ? 1 : 5, color: '#64748b' } 
+                    },
                     x: { ticks: { color: '#64748b', font: { size: 10 } } }
                 }
             }
