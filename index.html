@@ -8,123 +8,120 @@
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --neon-cyan: #00f2ff;
-            --neon-magenta: #bc13fe;
-            --neon-amber: #ffb700;
-            --neon-green: #39ff14;
-            --neon-red: #ff3131;
-            --bg-black: #05070a;
-            --border: rgba(0, 242, 255, 0.15);
+            --ui-cyan: #00f2ff;
+            --ui-magenta: #bc13fe;
+            --ui-amber: #ffb700;
+            --ui-green: #39ff14;
+            --ui-red: #ff3131;
+            --bg-deep: #05070a;
+            --bg-card: #0d1117;
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --text-main: #e2e8f0;
             --text-dim: #64748b;
         }
 
         * { box-sizing: border-box; }
         body { 
             font-family: 'Inter', sans-serif; margin: 0; display: flex; 
-            background: var(--bg-black); color: #fff; height: 100vh; overflow: hidden;
+            background: var(--bg-deep); color: var(--text-main); height: 100vh; overflow: hidden;
         }
 
-        /* Sidebar Navigation */
+        /* Sidebar Navigation - Muted */
         nav { 
-            width: 260px; background: rgba(0,0,0,0.95); border-right: 1px solid var(--border);
+            width: 260px; background: #080a0d; border-right: 1px solid var(--border-subtle);
             padding: 2rem; display: flex; flex-direction: column; flex-shrink: 0;
         }
-        .logo { font-family: 'Orbitron', sans-serif; font-size: 0.85rem; color: var(--neon-cyan); margin-bottom: 3rem; letter-spacing: 2px; }
+        .logo { font-family: 'Orbitron', sans-serif; font-size: 0.8rem; color: var(--text-dim); margin-bottom: 3rem; letter-spacing: 2px; }
         .nav-btn { 
-            width: 100%; padding: 12px; margin-bottom: 10px; background: transparent; border: 1px solid transparent;
-            color: var(--text-dim); cursor: pointer; text-align: left; font-size: 0.85rem; border-radius: 4px;
+            width: 100%; padding: 12px; margin-bottom: 8px; background: transparent; border: none;
+            color: var(--text-dim); cursor: pointer; text-align: left; font-size: 0.85rem; border-radius: 4px; transition: 0.2s;
         }
-        .active-nav { border-color: var(--neon-cyan); color: var(--neon-cyan); background: rgba(0,242,255,0.05); }
+        .active-nav { color: var(--ui-cyan); background: rgba(0, 242, 255, 0.05); font-weight: 600; }
 
-        /* Main Theater */
-        main { flex: 1; padding: 2.5rem; overflow-y: auto; background: radial-gradient(circle at 50% 0%, #0d1621 0%, #05070a 100%); display: flex; flex-direction: column; }
-        .header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem; flex-shrink: 0; }
-        h1 { font-family: 'Orbitron', sans-serif; font-size: 1.6rem; margin: 0; }
+        /* Main Theatre */
+        main { flex: 1; padding: 2.5rem; overflow-y: auto; display: flex; flex-direction: column; }
+        .header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem; }
+        h1 { font-family: 'Orbitron', sans-serif; font-size: 1.5rem; margin: 0; color: #fff; }
 
-        /* Matrix Elements */
+        /* The Grid Matrix */
         .matrix-wrapper { 
             flex: 1; overflow: hidden; display: flex; flex-direction: column;
-            border: 1px solid var(--border); border-radius: 8px; background: rgba(0,0,0,0.4);
+            border: 1px solid var(--border-subtle); border-radius: 6px; background: var(--bg-card);
         }
         .scroll-container { overflow: auto; width: 100%; }
         table { border-collapse: separate; border-spacing: 0; width: max-content; min-width: 100%; }
         
-        /* Row Status: Fail Warning */
-        .status-fail { background: rgba(255, 49, 49, 0.08) !important; transition: background 0.3s; }
-        .status-fail .final-val { color: var(--neon-red) !important; text-shadow: 0 0 10px var(--neon-red); }
-
-        /* Sticky Personnel Column */
+        /* Personnel Column - Locked & Clean */
         th:first-child, td:first-child { 
             position: sticky; left: 0; z-index: 10; 
-            background: #080c14; width: 300px; border-right: 2px solid var(--neon-cyan);
+            background: #0d1117; width: 280px; border-right: 1px solid var(--border-subtle);
         }
         
-        th { padding: 20px; font-family: 'Orbitron'; font-size: 0.7rem; color: var(--neon-cyan); border-bottom: 2px solid var(--border); position: relative; }
+        th { 
+            padding: 18px; font-family: 'Orbitron'; font-size: 0.65rem; color: var(--text-dim); 
+            border-bottom: 1px solid var(--border-subtle); background: #12181f; text-transform: uppercase;
+        }
 
-        /* Attendance Toggle UI */
-        .att-group { display: flex; gap: 5px; margin-top: 8px; }
+        /* Attendance Toggles - Muted until clicked */
+        .att-group { display: flex; gap: 4px; margin-top: 8px; }
         .att-btn { 
-            font-size: 0.6rem; font-family: 'Orbitron'; padding: 2px 6px; border-radius: 3px; 
-            border: 1px solid var(--text-dim); color: var(--text-dim); cursor: pointer; transition: 0.2s;
+            font-size: 0.55rem; font-family: 'Orbitron'; padding: 3px 7px; border-radius: 2px; 
+            border: 1px solid #2d333b; color: #444c56; cursor: pointer;
         }
-        .att-btn.active-p { background: rgba(57, 255, 20, 0.2); border-color: var(--neon-green); color: var(--neon-green); }
-        .att-btn.active-a { background: rgba(255, 49, 49, 0.2); border-color: var(--neon-red); color: var(--neon-red); }
-        .att-btn.active-l { background: rgba(255, 183, 0, 0.2); border-color: var(--neon-amber); color: var(--neon-amber); }
+        .att-btn.active-p { border-color: var(--ui-green); color: var(--ui-green); background: rgba(57, 255, 20, 0.05); }
+        .att-btn.active-a { border-color: var(--ui-red); color: var(--ui-red); background: rgba(255, 49, 49, 0.05); }
+        .att-btn.active-l { border-color: var(--ui-amber); color: var(--ui-amber); background: rgba(255, 183, 0, 0.05); }
 
-        /* Chromatic Inputs */
-        [contenteditable] { outline: none; background: rgba(255,255,255,0.03); padding: 10px; border-radius: 4px; border: 1px solid transparent; }
-        .s-name-input { font-weight: 600; color: var(--neon-green); font-size: 1rem; }
-        .score-input { font-family: 'Orbitron'; color: var(--neon-amber); font-weight: 700; font-size: 1.2rem; text-align: center; }
-        .score-input:focus { border-color: var(--neon-amber); background: rgba(255,183,0,0.08); }
-        .comment-input { font-size: 0.75rem; color: var(--text-dim); font-style: italic; display: block; margin-top: 8px; min-width: 220px; }
+        /* Inputs - High contrast, low "glow" */
+        [contenteditable] { outline: none; background: rgba(255,255,255,0.02); padding: 10px; border-radius: 4px; border: 1px solid transparent; }
+        .s-name-input { font-weight: 500; color: #fff; font-size: 0.95rem; }
+        .score-input { font-family: 'Orbitron'; color: #fff; font-weight: 700; font-size: 1.1rem; text-align: center; }
+        .score-input:focus { border-color: var(--ui-cyan); background: rgba(0, 242, 255, 0.03); }
+        .comment-input { font-size: 0.75rem; color: var(--text-dim); display: block; margin-top: 6px; min-width: 220px; }
 
-        .final-val { font-family: 'Orbitron'; color: var(--neon-magenta); font-weight: 700; font-size: 1.3rem; text-align: center; min-width: 140px; }
+        .final-val { font-family: 'Orbitron'; font-weight: 700; font-size: 1.2rem; text-align: center; min-width: 140px; color: #fff; }
+        .warn-text { color: var(--ui-red) !important; }
 
-        /* UI Buttons */
-        .btn { padding: 10px 18px; border: 1px solid var(--neon-cyan); background: transparent; color: var(--neon-cyan); font-family: 'Orbitron'; font-size: 0.65rem; cursor: pointer; border-radius: 4px; text-transform: uppercase; }
-        .btn:hover { background: var(--neon-cyan); color: #000; box-shadow: 0 0 15px var(--neon-cyan); }
-        .btn-diag { border-color: var(--neon-magenta); color: var(--neon-magenta); }
-        .btn-diag:hover { background: var(--neon-magenta); color: #fff; }
+        /* Standardized Buttons */
+        .btn { padding: 9px 16px; border: 1px solid #2d333b; background: transparent; color: var(--text-main); font-family: 'Orbitron'; font-size: 0.6rem; cursor: pointer; border-radius: 4px; text-transform: uppercase; transition: 0.2s; }
+        .btn:hover { border-color: var(--ui-cyan); color: var(--ui-cyan); }
+        
+        .btn-diag { border-color: rgba(188, 19, 254, 0.3); color: var(--ui-magenta); }
+        .btn-diag:hover { background: var(--ui-magenta); color: #fff; }
 
-        /* Collapsible Diagnostics */
+        /* Diagnostics HUD */
         .diag-container { 
-            margin-top: 2rem; background: rgba(0,0,0,0.95); border: 2px solid var(--neon-magenta); 
-            border-radius: 8px; display: none; overflow: hidden; animation: slideUp 0.3s ease-out; flex-shrink: 0;
+            margin-top: 1.5rem; background: #0d1117; border: 1px solid var(--ui-magenta); 
+            border-radius: 4px; display: none; overflow: hidden;
         }
-        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        .diag-header { padding: 12px 20px; background: rgba(188, 19, 254, 0.15); display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--neon-magenta); }
-        .diag-body { display: grid; grid-template-columns: 350px 1fr; gap: 2.5rem; padding: 2rem; }
-        .close-btn { color: var(--neon-magenta); cursor: pointer; font-size: 1.5rem; font-weight: bold; }
+        .diag-header { padding: 10px 20px; background: rgba(188, 19, 254, 0.05); display: flex; justify-content: space-between; border-bottom: 1px solid rgba(188, 19, 254, 0.2); }
+        .diag-body { display: grid; grid-template-columns: 320px 1fr; gap: 2rem; padding: 2rem; }
 
-        .del-x { position: absolute; top: 6px; right: 8px; color: var(--neon-red); cursor: pointer; opacity: 0.2; transition: 0.2s; }
-        .del-x:hover { opacity: 1; }
-
-        /* Scrollbar */
-        .scroll-container::-webkit-scrollbar { height: 10px; }
-        .scroll-container::-webkit-scrollbar-thumb { background: var(--border); border-radius: 5px; }
-        .scroll-container::-webkit-scrollbar-thumb:hover { background: var(--neon-cyan); }
+        /* Delete Control */
+        .del-x { position: absolute; top: 6px; right: 8px; color: var(--ui-red); cursor: pointer; opacity: 0; transition: 0.2s; }
+        td:hover .del-x, th:hover .del-x { opacity: 0.4; }
     </style>
 </head>
 <body>
 
 <nav>
-    <div class="logo">ELITE_SYSTEMS // v16.0</div>
+    <div class="logo">MARK_OS // v17.0</div>
     <div style="flex-grow: 1;">
         <button id="btn-TEJ3M" class="nav-btn active-nav" onclick="switchClass('TEJ3M')">Computer Engineering</button>
         <button id="btn-TDJ1O" class="nav-btn" onclick="switchClass('TDJ1O')">Technological Design</button>
     </div>
-    <button class="btn" style="width: 100%; border-color: var(--neon-green); color: var(--neon-green);" onclick="saveData()">[ SYNC_DATABASE ]</button>
+    <button class="btn" style="width: 100%; border-color: var(--ui-green); color: var(--ui-green);" onclick="saveData()">[ SYNC_DATA ]</button>
 </nav>
 
 <main>
     <div class="header">
         <div>
-            <h1>Command Matrix</h1>
-            <p id="sub-node" style="color: var(--neon-green); font-size: 0.6rem; letter-spacing: 2px; margin-top: 5px;">ACCESSING: COMPUTER ENGINEERING</p>
+            <h1 id="node-title">Computer Engineering</h1>
+            <p style="color: var(--text-dim); font-size: 0.6rem; letter-spacing: 1px; margin-top: 4px;">SYSTEM_STATUS: NOMINAL</p>
         </div>
-        <div style="display:flex; gap:12px">
-            <button class="btn" onclick="addAssignment()">+ ADD_ASSIGNMENT</button>
-            <button class="btn" onclick="addStudent()">+ ADD_STUDENT</button>
+        <div style="display:flex; gap:10px">
+            <button class="btn" onclick="addAssignment()">+ Assignment</button>
+            <button class="btn" onclick="addStudent()">+ Student</button>
         </div>
     </div>
 
@@ -139,16 +136,16 @@
 
     <div id="diag-panel" class="diag-container">
         <div class="diag-header">
-            <span style="font-family:'Orbitron'; font-size:0.7rem; color:var(--neon-magenta);">DIAGNOSTIC_ANALYSIS</span>
-            <span class="close-btn" onclick="closeDiagnostics()">×</span>
+            <span style="font-family:'Orbitron'; font-size:0.6rem; color:var(--ui-magenta);">SUBJECT_ANALYSIS_VIEW</span>
+            <span style="cursor:pointer; color:var(--ui-magenta);" onclick="closeDiagnostics()">CLOSE [×]</span>
         </div>
         <div class="diag-body">
             <div>
-                <h2 id="diag-name" style="margin:0 0 10px 0; font-weight:400; font-size:1.8rem; color:#fff;">---</h2>
-                <div id="diag-final" style="font-family:'Orbitron'; font-size:4.5rem; color:var(--neon-magenta); line-height: 1;">0%</div>
-                <div id="diag-logs" style="margin-top:25px; max-height: 250px; overflow-y: auto;"></div>
+                <h2 id="diag-name" style="margin:0 0 10px 0; font-weight:400; font-size:1.5rem; color:#fff;">---</h2>
+                <div id="diag-final" style="font-family:'Orbitron'; font-size:4rem; color:#fff; line-height: 1;">0%</div>
+                <div id="diag-logs" style="margin-top:20px; border-top: 1px solid #2d333b; padding-top:15px;"></div>
             </div>
-            <div style="height:350px; background:rgba(0,0,0,0.5); padding:20px; border:1px solid rgba(188,19,254,0.3);">
+            <div style="height:320px; background:rgba(0,0,0,0.2); border:1px solid #2d333b;">
                 <canvas id="gradeChart"></canvas>
             </div>
         </div>
@@ -159,24 +156,17 @@
     let currentClass = 'TEJ3M';
     let chartObj = null;
 
-    let db = JSON.parse(localStorage.getItem('techmark_v16')) || {
-        'TEJ3M': {
-            tasks: [{name: "Logic Circuits", w: 50}, {name: "Network Security", w: 50}],
-            students: [{name: "Marcus Vane", att: 'p', scores: [{g: 85, n: "Understands signal paths."}, {g: 45, n: "Firewall configuration error."}]}]
-        },
-        'TDJ1O': {
-            tasks: [{name: "Architectural CAD", w: 100}],
-            students: [{name: "Elena Rodriguez", att: 'p', scores: [{g: 92, n: "Strong structural logic."}]}]
-        }
+    let db = JSON.parse(localStorage.getItem('techmark_v17')) || {
+        'TEJ3M': { tasks: [{name: "Logic Lab", w: 50}, {name: "Network Final", w: 50}], students: [{name: "Marcus Vane", att: 'p', scores: [{g: 88, n: "Clean logic."}, {g: 42, n: "Major packet routing errors."}]}] },
+        'TDJ1O': { tasks: [{name: "CAD Design", w: 100}], students: [{name: "Elena Rodriguez", att: 'p', scores: [{g: 95, n: "Perfect scale."}]}] }
     };
 
     function switchClass(id) {
         currentClass = id;
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active-nav'));
         document.getElementById('btn-'+id).classList.add('active-nav');
-        document.getElementById('sub-node').innerText = `ACCESSING: ${id === 'TEJ3M' ? 'COMPUTER ENGINEERING' : 'TECHNOLOGICAL DESIGN'}`;
-        closeDiagnostics();
-        render();
+        document.getElementById('node-title').innerText = id === 'TEJ3M' ? 'Computer Engineering' : 'Technological Design';
+        closeDiagnostics(); render();
     }
 
     function render() {
@@ -189,10 +179,10 @@
             hContent += `<th style="width:250px">
                 <span class="del-x" onclick="deleteTask(${i})">×</span>
                 <div contenteditable="true" onblur="updateTask(${i},'name',this.innerText)">${t.name}</div>
-                <div style="color:var(--neon-green); font-size:0.6rem; margin-top:4px;" contenteditable="true" onblur="updateTask(${i},'w',this.innerText)">${t.w}%_WEIGHT</div>
+                <div style="color:var(--ui-cyan); font-size:0.55rem; margin-top:4px;" contenteditable="true" onblur="updateTask(${i},'w',this.innerText)">${t.w}%_WGT</div>
             </th>`;
         });
-        hContent += `<th class="final-val">Weighted_Average</th><th>Actions</th></tr>`;
+        hContent += `<th class="final-val">Average</th><th>Options</th></tr>`;
         head.innerHTML = hContent;
 
         body.innerHTML = '';
@@ -215,26 +205,22 @@
                 wSum += (data.g * (t.w / 100)); wUsed += (t.w / 100);
                 rContent += `<td>
                     <div contenteditable="true" class="score-input kb-nav" oninput="liveUpdate(${sIdx},${tIdx},this.innerText)">${data.g}</div>
-                    <div contenteditable="true" class="comment-input" onblur="updateNote(${sIdx},${tIdx},this.innerText)">${data.n || "Anecdotal evidence..."}</div>
+                    <div contenteditable="true" class="comment-input" onblur="updateNote(${sIdx},${tIdx},this.innerText)">${data.n || "Comments..."}</div>
                 </td>`;
             });
 
             let final = wUsed > 0 ? (wSum / wUsed).toFixed(1) : 0;
-            if(final < 50) tr.classList.add('status-fail');
+            let warnClass = final < 50 ? 'warn-text' : '';
 
-            rContent += `<td class="final-val" id="final-${sIdx}">${final}%</td>`;
-            rContent += `<td><button class="btn btn-diag" onclick="viewDiagnostics(${sIdx})">Diagnostics</button></td>`;
+            rContent += `<td class="final-val ${warnClass}" id="final-${sIdx}">${final}%</td>`;
+            rContent += `<td><button class="btn btn-diag" onclick="viewDiagnostics(${sIdx})">Analyze</button></td>`;
             
             tr.innerHTML = rContent;
             body.appendChild(tr);
         });
-        setupEnterNav();
     }
 
-    function setAtt(sIdx, type) {
-        db[currentClass].students[sIdx].att = type;
-        render();
-    }
+    function setAtt(sIdx, type) { db[currentClass].students[sIdx].att = type; render(); }
 
     function liveUpdate(sIdx, tIdx, val) {
         let v = parseFloat(val) || 0;
@@ -247,23 +233,7 @@
         let final = (wu > 0 ? (ws/wu).toFixed(1) : 0);
         const cell = document.getElementById(`final-${sIdx}`);
         cell.innerText = final + "%";
-        const row = cell.closest('tr');
-        if(final < 50) row.classList.add('status-fail'); else row.classList.remove('status-fail');
-    }
-
-    function setupEnterNav() {
-        document.getElementById('grade-matrix').addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                const td = e.target.closest('td');
-                const row = td.parentElement, colIndex = Array.from(row.cells).indexOf(td);
-                const nextRow = row.nextElementSibling;
-                if (nextRow) {
-                    const target = nextRow.cells[colIndex].querySelector('.kb-nav');
-                    if (target) target.focus();
-                }
-            }
-        });
+        if(final < 50) cell.classList.add('warn-text'); else cell.classList.remove('warn-text');
     }
 
     function updateNote(s, t, v) { db[currentClass].students[s].scores[t].n = v; }
@@ -280,45 +250,28 @@
         document.getElementById('diag-panel').style.display = 'block';
         document.getElementById('diag-name').innerText = s.name.toUpperCase();
         document.getElementById('diag-final').innerText = document.getElementById(`final-${idx}`).innerText;
-
         const logCont = document.getElementById('diag-logs');
         logCont.innerHTML = '';
         s.scores.forEach((score, i) => {
-            if(score.n && score.n !== "Anecdotal evidence...") {
-                logCont.innerHTML += `<div style="margin-bottom:12px; border-left:3px solid var(--neon-magenta); padding-left:12px;">
-                    <div style="font-size:0.65rem; color:var(--neon-magenta); font-family:'Orbitron';">${tasks[i].name} — Score: ${score.g}%</div>
-                    <div style="font-size:0.85rem; color:#fff; margin-top:2px;">${score.n}</div>
+            if(score.n && score.n !== "Comments...") {
+                logCont.innerHTML += `<div style="margin-bottom:12px; border-left:2px solid var(--ui-magenta); padding-left:12px;">
+                    <div style="font-size:0.6rem; color:var(--ui-magenta); font-family:'Orbitron';">${tasks[i].name} — ${score.g}%</div>
+                    <div style="font-size:0.8rem; color:#fff;">${score.n}</div>
                 </div>`;
             }
         });
-
         if(chartObj) chartObj.destroy();
         const ctx = document.getElementById('gradeChart').getContext('2d');
         chartObj = new Chart(ctx, {
             type: 'bar',
-            data: {
-                labels: tasks.map(t => t.name),
-                datasets: [{
-                    data: s.scores.map(g => g.g),
-                    backgroundColor: 'rgba(188, 19, 254, 0.4)',
-                    borderColor: '#bc13fe',
-                    borderWidth: 2
-                }]
-            },
-            options: {
-                responsive: true, maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: { 
-                    y: { min: 0, max: 100, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { stepSize: 5, color: '#bc13fe', font: { family: 'Orbitron' } } },
-                    x: { ticks: { color: '#bc13fe', font: { family: 'Orbitron' } } }
-                }
-            }
+            data: { labels: tasks.map(t => t.name), datasets: [{ data: s.scores.map(g => g.g), backgroundColor: 'rgba(188, 19, 254, 0.2)', borderColor: '#bc13fe', borderWidth: 1 }] },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { min: 0, max: 100, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { stepSize: 10, color: '#64748b', font: { family: 'Orbitron', size: 9 } } }, x: { ticks: { color: '#64748b', font: { family: 'Orbitron', size: 9 } } } } }
         });
         document.getElementById('diag-panel').scrollIntoView({ behavior: 'smooth' });
     }
 
     function closeDiagnostics() { document.getElementById('diag-panel').style.display = 'none'; }
-    function saveData() { localStorage.setItem('techmark_v16', JSON.stringify(db)); alert("LOCAL_DATABASE_SYNCHRONIZED"); }
+    function saveData() { localStorage.setItem('techmark_v17', JSON.stringify(db)); alert("STORAGE_SYNCHRONIZED"); }
     window.onload = render;
 </script>
 </body>
