@@ -3,113 +3,115 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TechMark Elite // HUD Edition</title>
+    <title>EliteMark // Tactical HUD</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --neon-cyan: #00f2ff;
             --neon-magenta: #bc13fe;
-            --bg-deep: #05070a;
-            --glass: rgba(0, 242, 255, 0.03);
+            --bg-black: #020408;
+            --hud-grid: rgba(0, 242, 255, 0.05);
             --border: rgba(0, 242, 255, 0.2);
-            --text: #e2e8f0;
+            --text-dim: #94a3b8;
         }
 
         * { box-sizing: border-box; }
         body { 
             font-family: 'Inter', sans-serif; margin: 0; display: flex; 
-            background: var(--bg-deep); color: var(--text); height: 100vh; overflow: hidden;
+            background: var(--bg-black); color: #fff; height: 100vh; overflow: hidden;
         }
 
-        /* Sidebar */
+        /* Side Deck */
         nav { 
-            width: 260px; background: rgba(0,0,0,0.8); backdrop-filter: blur(15px);
-            border-right: 1px solid var(--border); padding: 2rem; display: flex; flex-direction: column;
+            width: 280px; background: rgba(0,0,0,0.9); border-right: 2px solid var(--border);
+            padding: 2.5rem; display: flex; flex-direction: column; z-index: 10;
         }
-        .logo { font-family: 'Orbitron', sans-serif; font-weight: 700; color: var(--neon-cyan); text-shadow: 0 0 10px var(--neon-cyan); margin-bottom: 3rem; font-size: 1rem; }
+        .logo { font-family: 'Orbitron', sans-serif; font-size: 0.9rem; color: var(--neon-cyan); text-shadow: 0 0 15px var(--neon-cyan); margin-bottom: 3rem; letter-spacing: 3px; }
+        
         .nav-btn { 
-            width: 100%; padding: 12px; margin-bottom: 10px; background: transparent; border: 1px solid transparent;
-            color: #94a3b8; cursor: pointer; text-align: left; border-radius: 8px; font-weight: 600;
+            width: 100%; padding: 15px; margin-bottom: 12px; background: transparent; border: 1px solid transparent;
+            color: var(--text-dim); cursor: pointer; text-align: left; font-family: 'Orbitron'; font-size: 0.7rem; border-radius: 4px;
         }
-        .active-nav { border-color: var(--neon-cyan); color: var(--neon-cyan); background: var(--glass); }
+        .active-nav { border-color: var(--neon-cyan); color: var(--neon-cyan); background: rgba(0,242,255,0.05); box-shadow: inset 0 0 10px rgba(0,242,255,0.1); }
 
-        /* Main Workspace */
-        main { flex: 1; padding: 3rem; overflow-y: auto; background: linear-gradient(180deg, rgba(0,242,255,0.02) 0%, transparent 100%); }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
-        h1 { font-family: 'Orbitron', sans-serif; letter-spacing: 2px; font-size: 1.5rem; }
+        /* Main Theatre */
+        main { flex: 1; padding: 4rem; overflow-y: auto; background-image: 
+            linear-gradient(var(--hud-grid) 1px, transparent 1px),
+            linear-gradient(90deg, var(--hud-grid) 1px, transparent 1px);
+            background-size: 40px 40px; }
 
-        /* The Grid */
-        .glass-card { 
-            background: rgba(10, 15, 24, 0.7); border: 1px solid var(--border); 
-            border-radius: 4px; padding: 2rem; margin-bottom: 2rem;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5), inset 0 0 10px rgba(0,242,255,0.05);
+        .header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 3rem; }
+        h1 { font-family: 'Orbitron', sans-serif; font-size: 2rem; margin: 0; text-transform: uppercase; color: #fff; }
+
+        /* Grade Matrix */
+        .matrix-card { 
+            background: rgba(5, 10, 20, 0.9); border: 1px solid var(--border); 
+            padding: 2rem; border-radius: 4px; position: relative;
         }
         table { width: 100%; border-collapse: collapse; }
-        th { text-align: left; padding: 12px; font-size: 0.65rem; color: var(--neon-cyan); text-transform: uppercase; border-bottom: 1px solid var(--border); }
-        
-        /* HUD Inputs */
-        .grade-box { border-left: 2px solid var(--border); padding-left: 10px; margin: 5px 0; }
-        [contenteditable] { outline: none; background: rgba(255,255,255,0.02); padding: 5px; border-radius: 2px; }
-        [contenteditable]:focus { background: rgba(0,242,255,0.1); border-bottom: 1px solid var(--neon-cyan); }
-        
-        .score-val { font-family: 'Orbitron'; font-size: 1.1rem; color: #fff; width: 60px; text-align: center; }
-        .note-val { font-size: 0.7rem; color: #64748b; min-width: 150px; display: block; margin-top: 4px; }
-        
-        .final-val { font-family: 'Orbitron'; color: var(--neon-magenta); font-weight: 700; text-shadow: 0 0 8px var(--neon-magenta); }
+        th { text-align: left; padding: 15px; font-family: 'Orbitron'; font-size: 0.65rem; color: var(--neon-cyan); border-bottom: 2px solid var(--border); letter-spacing: 1px; }
+        td { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); }
 
-        /* Buttons */
-        .btn { padding: 10px 20px; border-radius: 2px; border: 1px solid var(--neon-cyan); background: transparent; color: var(--neon-cyan); font-family: 'Orbitron'; font-size: 0.7rem; cursor: pointer; text-transform: uppercase; }
-        .btn:hover { background: var(--neon-cyan); color: #000; box-shadow: 0 0 15px var(--neon-cyan); }
+        /* Inputs */
+        .cell-input { outline: none; background: rgba(255,255,255,0.03); border: 1px solid transparent; padding: 10px; border-radius: 4px; }
+        .cell-input:focus { border-color: var(--neon-cyan); background: rgba(0,242,255,0.05); }
+        .score-val { font-family: 'Orbitron'; font-size: 1.2rem; font-weight: 700; width: 80px; text-align: center; }
+        .note-val { font-size: 0.75rem; color: #64748b; font-style: italic; min-width: 200px; display: block; margin-top: 5px; }
 
-        /* HUD Graph Analytics */
-        .hud-ana-grid { display: grid; grid-template-columns: 280px 1fr; gap: 3rem; align-items: center; }
-        .scanline { position: relative; overflow: hidden; border: 1px solid var(--border); background: #000; padding: 20px; border-radius: 8px; }
-        .scanline::after { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: repeating-linear-gradient(0deg, rgba(0,0,0,0.1) 0px, rgba(0,0,0,0.1) 1px, transparent 1px, transparent 2px); pointer-events: none; }
+        .avg-display { font-family: 'Orbitron'; font-size: 1.4rem; color: var(--neon-magenta); text-shadow: 0 0 10px var(--neon-magenta); font-weight: 700; }
+
+        /* HUD Buttons */
+        .btn { padding: 12px 25px; border: 1px solid var(--neon-cyan); background: transparent; color: var(--neon-cyan); font-family: 'Orbitron'; font-size: 0.7rem; cursor: pointer; border-radius: 4px; }
+        .btn:hover { background: var(--neon-cyan); color: #000; box-shadow: 0 0 20px var(--neon-cyan); }
+
+        /* The HUD Graph Panel */
+        .ana-panel { display: grid; grid-template-columns: 350px 1fr; gap: 4rem; margin-top: 3rem; padding: 2rem; background: rgba(0,0,0,0.8); border: 2px solid var(--neon-magenta); border-radius: 8px; }
+        .big-data { font-family: 'Orbitron'; font-size: 5rem; color: var(--neon-cyan); margin: 0; line-height: 1; }
+        .graph-container { background: #000; border: 1px solid var(--border); padding: 20px; position: relative; height: 350px; }
         
-        .big-stat { font-family: 'Orbitron'; font-size: 4rem; color: var(--neon-cyan); margin: 0; }
-        .delete-btn { color: #ff4d4d; opacity: 0.3; cursor: pointer; float: right; font-size: 0.8rem; }
-        .delete-btn:hover { opacity: 1; }
+        .delete-btn { color: #ff4d4d; cursor: pointer; float: right; font-size: 0.8rem; margin-top: -10px; }
     </style>
 </head>
 <body>
 
 <nav>
-    <div class="logo">ELITE_SYSTEMS // v9.0</div>
+    <div class="logo">MARK_COMMAND // v10.0</div>
     <div style="flex-grow: 1;">
-        <button id="btn-TEJ3M" class="nav-btn active-nav" onclick="switchClass('TEJ3M')">LINK: TEJ3M</button>
-        <button id="btn-TDJ1O" class="nav-btn" onclick="switchClass('TDJ1O')">LINK: TDJ1O</button>
+        <button id="btn-TEJ3M" class="nav-btn active-nav" onclick="switchClass('TEJ3M')">DATALINK: TEJ3M</button>
+        <button id="btn-TDJ1O" class="nav-btn" onclick="switchClass('TDJ1O')">DATALINK: TDJ1O</button>
     </div>
-    <button class="btn" style="width: 100%;" onclick="saveData()">[ SYNC_TO_CLOUD ]</button>
+    <button class="btn" style="width: 100%;" onclick="saveData()">[ COMMIT_TO_STORAGE ]</button>
 </nav>
 
 <main>
     <div class="header">
-        <h1 id="view-title">COMPUTER_ENGINEERING</h1>
-        <div style="display:flex; gap:10px">
-            <button class="btn" onclick="addAssignment()">+ ADD_PROJ</button>
-            <button class="btn" onclick="addStudent()">+ ADD_STU</button>
+        <div>
+            <h1 id="view-title">COMPUTER_ENGINEERING</h1>
+            <p style="color: var(--neon-cyan); font-size: 0.6rem; letter-spacing: 2px; margin-top: 5px;">TACTICAL GRADE_MATRIX // SEMESTER II</p>
+        </div>
+        <div style="display:flex; gap:15px">
+            <button class="btn" onclick="addAssignment()">+ ADD_VECTOR</button>
+            <button class="btn" onclick="addStudent()">+ ADD_SUBJECT</button>
         </div>
     </div>
 
-    <div class="glass-card">
-        <table id="grade-table">
-            <thead id="t-head"></thead>
-            <tbody id="t-body"></tbody>
+    <div class="matrix-card">
+        <table id="grade-matrix">
+            <thead id="h-row"></thead>
+            <tbody id="b-rows"></tbody>
         </table>
     </div>
 
-    <div id="ana-panel" class="glass-card" style="display:none; border-color: var(--neon-magenta);">
-        <div class="hud-ana-grid">
-            <div>
-                <span style="font-size:0.6rem; color:var(--neon-magenta); font-weight:700;">VECTOR_ANALYSIS</span>
-                <h2 id="ana-name" style="margin:5px 0; font-weight:400; font-family:'Orbitron';">SUBJECT_01</h2>
-                <div class="big-stat" id="ana-final">0%</div>
-                <p id="ana-note-summary" style="font-size:0.75rem; color:#64748b; margin-top:10px;"></p>
-            </div>
-            <div class="scanline">
-                <canvas id="hudChart" height="280"></canvas>
-            </div>
+    <div id="ana-panel" class="ana-panel" style="display:none;">
+        <div>
+            <span style="font-family:'Orbitron'; font-size:0.7rem; color:var(--neon-magenta);">SUBJECT_PROFILE</span>
+            <h2 id="ana-name" style="margin:10px 0; font-size:2rem; font-weight:400;">---</h2>
+            <div class="big-data" id="ana-final">0%</div>
+            <p style="color:var(--text-dim); font-size:0.8rem; margin-top:15px; border-top:1px solid var(--border); padding-top:15px;" id="ana-comments"></p>
+        </div>
+        <div class="graph-container">
+            <canvas id="hudBarChart"></canvas>
         </div>
     </div>
 </main>
@@ -118,14 +120,14 @@
     let currentClass = 'TEJ3M';
     let myChart = null;
 
-    let db = JSON.parse(localStorage.getItem('tech_hud_v9')) || {
+    let db = JSON.parse(localStorage.getItem('tech_hud_v10')) || {
         'TEJ3M': {
-            tasks: [{name: "OSI_MODEL", w: 20}, {name: "ROUTER_CONFIG", w: 30}],
-            students: [{name: "Marcus Vane", scores: [{g: 85, n: "Logical approach"}, {g: 90, n: "Flawless subnetting"}]}]
+            tasks: [{name: "NETWORK_PROTO", w: 20}, {name: "SERVER_DEPLOY", w: 30}],
+            students: [{name: "Marcus Vane", scores: [{g: 82, n: "Understands handshake"}, {g: 94, n: "Rapid deployment"}]}]
         },
         'TDJ1O': {
-            tasks: [{name: "ISO_SKETCH", w: 40}],
-            students: [{name: "Elena Rodriguez", scores: [{g: 92, n: "Perfect line weights"}]}]
+            tasks: [{name: "CAD_RENDER", w: 50}],
+            students: [{name: "Elena Rodriguez", scores: [{g: 88, n: "High mesh quality"}]}]
         }
     };
 
@@ -139,19 +141,19 @@
 
     function render() {
         const course = db[currentClass];
-        const head = document.getElementById('t-head');
-        const body = document.getElementById('t-body');
+        const head = document.getElementById('h-row');
+        const body = document.getElementById('b-rows');
 
         // Header
-        let hHTML = `<tr><th>Personnel</th>`;
+        let hHTML = `<tr><th style="width:250px">Subject Name</th>`;
         course.tasks.forEach((t, i) => {
             hHTML += `<th>
-                <span class="delete-btn" onclick="deleteTask(${i})">[X]</span>
+                <span class="delete-btn" onclick="deleteTask(${i})">[PURGE]</span>
                 <div contenteditable="true" onblur="updateTask(${i},'name',this.innerText)">${t.name}</div>
-                <div style="color:var(--neon-cyan); font-size:0.6rem" contenteditable="true" onblur="updateTask(${i},'w',this.innerText)">${t.w}%</div>
+                <div style="color:var(--neon-cyan); font-size:0.6rem" contenteditable="true" onblur="updateTask(${i},'w',this.innerText)">${t.w}%_WT</div>
             </th>`;
         });
-        hHTML += `<th>Current_Standing</th><th></th></tr>`;
+        hHTML += `<th>Final_Avg</th><th></th></tr>`;
         head.innerHTML = hHTML;
 
         // Rows
@@ -160,23 +162,21 @@
             let tr = document.createElement('tr');
             let wSum = 0; let wUsed = 0;
 
-            let rHTML = `<td contenteditable="true" class="nav-cell" onblur="updateSName(${sIdx},this.innerText)" style="font-weight:700; color:var(--neon-cyan)">${s.name}</td>`;
+            let rHTML = `<td contenteditable="true" class="cell-input nav-target" data-col="0" onblur="updateSName(${sIdx},this.innerText)" style="font-weight:700; color:var(--neon-cyan)">${s.name}</td>`;
             
             course.tasks.forEach((t, tIdx) => {
                 let data = s.scores[tIdx] || {g: 0, n: ""};
                 wSum += (data.g * (t.w / 100));
                 wUsed += (t.w / 100);
                 rHTML += `<td>
-                    <div class="grade-box">
-                        <div contenteditable="true" class="score-val nav-cell" oninput="liveUpdate(${sIdx},${tIdx},this.innerText)">${data.g}</div>
-                        <div contenteditable="true" class="note-val" onblur="updateNote(${sIdx},${tIdx},this.innerText)">${data.n || "NOTES..."}</div>
-                    </div>
+                    <div contenteditable="true" class="cell-input score-val nav-target" data-col="${tIdx+1}" oninput="liveUpdate(${sIdx},${tIdx},this.innerText)">${data.g}</div>
+                    <div contenteditable="true" class="cell-input note-val" onblur="updateNote(${sIdx},${tIdx},this.innerText)">${data.n || "ANEKDOTAL_LOG..."}</div>
                 </td>`;
             });
 
             let final = wUsed > 0 ? (wSum / wUsed).toFixed(1) : 0;
-            rHTML += `<td class="final-val" id="final-${sIdx}">${final}%</td>`;
-            rHTML += `<td><button class="btn" style="font-size:0.5rem; padding:4px 8px;" onclick="viewStats(${sIdx})">DIAGNOSTICS</button></td>`;
+            rHTML += `<td class="avg-display" id="final-${sIdx}">${final}%</td>`;
+            rHTML += `<td><button class="btn" style="font-size:0.5rem;" onclick="viewStats(${sIdx})">DIAGNOSTICS</button></td>`;
             
             tr.innerHTML = rHTML;
             body.appendChild(tr);
@@ -186,7 +186,7 @@
     }
 
     function setupEnterKey() {
-        const table = document.getElementById('grade-table');
+        const table = document.getElementById('grade-matrix');
         table.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 e.preventDefault();
@@ -195,7 +195,7 @@
                 const colIndex = Array.from(row.cells).indexOf(cell.closest('td'));
                 const nextRow = row.nextElementSibling;
                 if (nextRow) {
-                    const target = nextRow.cells[colIndex].querySelector('[contenteditable]');
+                    const target = nextRow.cells[colIndex].querySelector('.nav-target');
                     if (target) target.focus();
                 }
             }
@@ -229,39 +229,29 @@
         render();
     }
 
-    function deleteTask(i) { if(confirm("DELETE VECTOR DATA?")) { db[currentClass].tasks.splice(i, 1); db[currentClass].students.forEach(s => s.scores.splice(i, 1)); render(); } }
+    function deleteTask(i) { if(confirm("PURGE DATA VECTOR?")) { db[currentClass].tasks.splice(i, 1); db[currentClass].students.forEach(s => s.scores.splice(i, 1)); render(); } }
 
     function viewStats(idx) {
         const s = db[currentClass].students[idx];
-        document.getElementById('ana-panel').style.display = 'block';
+        document.getElementById('ana-panel').style.display = 'grid';
         document.getElementById('ana-name').innerText = s.name.toUpperCase();
         document.getElementById('ana-final').innerText = document.getElementById(`final-${idx}`).innerText;
-        document.getElementById('ana-note-summary').innerText = s.scores.map(x => x.n).filter(n => n && n !== "NOTES...").join(" | ");
+        document.getElementById('ana-comments').innerText = "LOGS: " + s.scores.map(x => x.n).filter(n => n && n !== "ANEKDOTAL_LOG...").join(" // ");
 
         if(myChart) myChart.destroy();
-        const ctx = document.getElementById('hudChart').getContext('2d');
+        const ctx = document.getElementById('hudBarChart').getContext('2d');
         
-        // HUD Glow Gradient
-        const gradient = ctx.createLinearGradient(0, 0, 0, 400);
-        gradient.addColorStop(0, 'rgba(0, 242, 255, 0.3)');
-        gradient.addColorStop(1, 'rgba(188, 19, 254, 0.05)');
-
         myChart = new Chart(ctx, {
-            type: 'line',
+            type: 'bar',
             data: {
                 labels: db[currentClass].tasks.map(t => t.name),
                 datasets: [{
-                    label: 'VECTOR_STRENGTH',
+                    label: 'VECTOR_SCORE',
                     data: s.scores.map(g => g.g),
+                    backgroundColor: 'rgba(0, 242, 255, 0.4)',
                     borderColor: '#00f2ff',
-                    borderWidth: 3,
-                    pointBackgroundColor: '#fff',
-                    pointBorderColor: '#bc13fe',
-                    pointRadius: 6,
-                    pointHoverRadius: 10,
-                    tension: 0.1, // Sharper tech-look
-                    fill: true,
-                    backgroundColor: gradient
+                    borderWidth: 2,
+                    barPercentage: 0.6
                 }]
             },
             options: {
@@ -269,12 +259,16 @@
                 plugins: { legend: { display: false } },
                 scales: { 
                     y: { 
-                        min: 0, max: 100, 
+                        min: 0, max: 100,
                         grid: { color: 'rgba(0, 242, 255, 0.1)' },
-                        ticks: { color: '#00f2ff', font: { family: 'Orbitron', size: 10 } }
+                        ticks: { 
+                            stepSize: 5, 
+                            color: '#00f2ff', 
+                            font: { family: 'Orbitron', size: 10 } 
+                        }
                     },
                     x: { 
-                        grid: { color: 'rgba(0, 242, 255, 0.1)' },
+                        grid: { display: false },
                         ticks: { color: '#00f2ff', font: { family: 'Orbitron', size: 10 } }
                     }
                 }
@@ -283,7 +277,7 @@
         document.getElementById('ana-panel').scrollIntoView({ behavior: 'smooth' });
     }
 
-    function saveData() { localStorage.setItem('tech_hud_v9', JSON.stringify(db)); alert("DATA_SYNC_COMPLETE"); }
+    function saveData() { localStorage.setItem('tech_hud_v10', JSON.stringify(db)); alert("SYSTEM_SYNC_SUCCESSFUL"); }
     window.onload = render;
 </script>
 </body>
