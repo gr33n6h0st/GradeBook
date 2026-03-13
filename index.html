@@ -2,52 +2,50 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>EliteMark // v32.0</title>
+    <title>EliteMark // v33.0</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --ui-cyan: #00f2ff; --ui-amber: #ffb700; --ui-red: #ff3131;
-            --bg-deep: #05070a; --bg-card: #0d1117; --border: rgba(0, 242, 255, 0.15);
+            --ui-cyan: #00f2ff; --ui-amber: #ffb700; --ui-magenta: #bc13fe;
+            --ui-red: #ff3131; --bg-deep: #05070a; --bg-card: #0d1117;
+            --border: rgba(0, 242, 255, 0.15);
         }
         body { font-family: 'Inter', sans-serif; margin: 0; background: var(--bg-deep); color: #e2e8f0; height: 100vh; display: flex; overflow: hidden; }
         
-        /* Sidebar */
         nav { width: 220px; background: #080a0d; border-right: 1px solid var(--border); padding: 1rem; display: flex; flex-direction: column; flex-shrink: 0; }
         .class-row { display: flex; align-items: center; margin-bottom: 5px; gap: 5px; }
         .nav-btn { flex: 1; padding: 10px; background: transparent; border: 1px solid transparent; color: #64748b; cursor: pointer; text-align: left; font-family: 'Orbitron'; font-size: 0.7rem; }
         .active-nav { color: var(--ui-cyan); border-bottom: 1px solid var(--ui-cyan); }
         
-        /* Main UI */
-        main { flex: 1; padding: 1.5rem; overflow-y: auto; display: flex; flex-direction: column; }
-        .matrix-container { flex: 1; overflow: auto; border: 1px solid var(--border); background: var(--bg-card); border-radius: 4px; }
+        main { flex: 1; padding: 1.5rem; display: flex; flex-direction: column; overflow: hidden; }
         
-        table { border-collapse: separate; border-spacing: 0; width: 100%; table-layout: fixed; }
-        th, td { padding: 10px; border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); }
+        /* HORIZONTAL SCROLL FIX */
+        .matrix-container { flex: 1; overflow: auto; border: 1px solid var(--border); background: var(--bg-card); border-radius: 4px; position: relative; }
+        table { border-collapse: separate; border-spacing: 0; width: max-content; min-width: 100%; table-layout: auto; }
+        
+        th, td { padding: 10px; border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); width: 150px; min-width: 150px; }
         
         th { position: sticky; top: 0; background: #161e27; z-index: 10; font-family: 'Orbitron'; font-size: 0.65rem; color: var(--ui-cyan); text-align: center; }
-        th:first-child, td:first-child { position: sticky; left: 0; background: #111821; z-index: 11; width: 220px; }
+        th:first-child, td:first-child { position: sticky; left: 0; background: #111821; z-index: 11; width: 220px; min-width: 220px; }
 
         [contenteditable] { outline: none; padding: 5px; border-radius: 3px; }
         [contenteditable]:focus { background: rgba(0, 242, 255, 0.08); border: 1px solid var(--ui-cyan); }
         
         .score-cell { font-family: 'Orbitron'; color: var(--ui-amber); text-align: center; font-size: 1.2rem; }
-        .name-input { color: #fff; font-weight: 600; cursor: pointer; display: inline-block; width: 70%; }
-        .comment-field { border: 1px solid #222; background: #000; font-size: 0.75rem; color: #888; margin-top: 6px; min-height: 40px; border-radius: 4px; padding: 5px; }
+        .name-input { color: #fff; font-weight: 600; cursor: pointer; display: inline-block; width: 65%; }
+        .comment-field { border: 1px solid #222; background: #000; font-size: 0.75rem; color: #888; margin-top: 6px; min-height: 40px; border-radius: 4px; padding: 5px; white-space: normal; }
 
         .btn { padding: 6px 12px; background: transparent; border: 1px solid var(--ui-cyan); color: var(--ui-cyan); font-family: 'Orbitron'; font-size: 0.6rem; cursor: pointer; }
-        .btn:hover { background: var(--ui-cyan); color: #000; }
         .del-x { color: var(--ui-red); cursor: pointer; font-weight: bold; opacity: 0.5; padding: 0 5px; }
-        .del-x:hover { opacity: 1; }
 
-        /* Graph Panel */
-        #graph-panel { height: 280px; background: #080a0d; border-top: 1px solid var(--ui-cyan); padding: 15px; display: none; }
+        #graph-panel { height: 300px; background: #080a0d; border-top: 1px solid var(--ui-magenta); padding: 15px; display: none; }
     </style>
 </head>
 <body>
 
 <nav>
-    <div style="font-family:'Orbitron'; color:var(--ui-cyan); font-size:0.75rem; margin-bottom:1.5rem;">ELITEMARK_V32</div>
+    <div style="font-family:'Orbitron'; color:var(--ui-cyan); font-size:0.75rem; margin-bottom:1.5rem;">ELITEMARK_V33</div>
     <div style="display:flex; gap:5px; margin-bottom:1rem;">
         <button class="btn" style="flex:1" onclick="addClass()">+ CLASS</button>
         <button class="btn" style="flex:1" onclick="cloneClass()">CLONE</button>
@@ -76,29 +74,27 @@
 
     <div id="graph-panel">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-            <span id="chart-label" style="font-family:'Orbitron'; font-size:0.8rem; color:var(--ui-cyan);"></span>
-            <button class="btn" onclick="document.getElementById('graph-panel').style.display='none'">CLOSE ×</button>
+            <span id="chart-label" style="font-family:'Orbitron'; font-size:0.8rem; color:var(--ui-magenta);"></span>
+            <button class="btn" style="border-color:var(--ui-magenta); color:var(--ui-magenta)" onclick="document.getElementById('graph-panel').style.display='none'">CLOSE ×</button>
         </div>
-        <div style="height:220px;"><canvas id="chartObj"></canvas></div>
+        <div style="height:230px;"><canvas id="chartObj"></canvas></div>
     </div>
 </main>
 
 <script>
     let activeClass = 'TEJ3M';
     let myChart = null;
-    let data = JSON.parse(localStorage.getItem('eliteMark_v32')) || {
+    let data = JSON.parse(localStorage.getItem('eliteMark_v33')) || {
         'TEJ3M': { tasks: [{n: "Assignment 1", w: 100}], students: [{n: "Student Name", s: [0], c: [""]}] }
     };
 
-    // RESTORED ENTER KEY LOGIC
     document.addEventListener('keydown', e => {
         if (e.key === 'Enter' && e.target.hasAttribute('contenteditable')) {
-            e.preventDefault();
-            e.target.blur();
+            e.preventDefault(); e.target.blur();
         }
     });
 
-    function sync() { localStorage.setItem('eliteMark_v32', JSON.stringify(data)); render(); }
+    function sync() { localStorage.setItem('eliteMark_v33', JSON.stringify(data)); render(); }
 
     function render() {
         const list = document.getElementById('class-list');
@@ -115,9 +111,9 @@
         current.tasks.forEach((t, i) => {
             h += `<th><span class="del-x" onclick="delTask(${i})">×</span>
                 <div contenteditable onblur="data['${activeClass}'].tasks[${i}].n=this.innerText;sync()">${t.n}</div>
-                <div style="color:var(--ui-cyan); font-size:0.5rem;" contenteditable onblur="data['${activeClass}'].tasks[${i}].w=parseInt(this.innerText)||0;sync()">${t.w}%</div></th>`;
+                <div style="color:var(--ui-cyan); font-size:0.55rem;" contenteditable onblur="data['${activeClass}'].tasks[${i}].w=parseInt(this.innerText)||0;sync()">${t.w}%</div></th>`;
         });
-        h += `<th style="width:80px">AVG</th></tr>`;
+        h += `<th style="width:100px; min-width:100px;">TOTAL AVG</th></tr>`;
         document.getElementById('thead').innerHTML = h;
 
         let b = '';
@@ -125,13 +121,13 @@
             let avg = 0;
             b += `<tr><td><span class="del-x" onclick="delStudent(${si})">×</span>
                 <div class="name-input" contenteditable onblur="data['${activeClass}'].students[${si}].n=this.innerText;sync()">${s.n}</div>
-                <button class="btn" style="padding:2px 5px; font-size:8px;" onclick="showGraph(${si})">DATA</button></td>`;
+                <button class="btn" style="padding:2px 5px; font-size:8px; float:right;" onclick="showGraph(${si})">DATA</button></td>`;
             current.tasks.forEach((t, ti) => {
                 avg += ((s.s[ti] || 0) * (t.w / 100));
                 b += `<td><div class="score-cell" contenteditable onblur="data['${activeClass}'].students[${si}].s[${ti}]=parseFloat(this.innerText)||0;sync()">${s.s[ti]||0}</div>
                           <div class="comment-field" contenteditable onblur="data['${activeClass}'].students[${si}].c[${ti}]=this.innerText;sync()">${s.c[ti]||""}</div></td>`;
             });
-            b += `<td style="font-family:Orbitron; text-align:center; font-weight:700;">${avg.toFixed(1)}%</td></tr>`;
+            b += `<td style="font-family:Orbitron; text-align:center; font-weight:700; color:var(--ui-magenta); font-size:1.1rem;">${avg.toFixed(1)}%</td></tr>`;
         });
         document.getElementById('tbody').innerHTML = b;
     }
@@ -139,18 +135,28 @@
     function showGraph(si) {
         document.getElementById('graph-panel').style.display = 'block';
         const s = data[activeClass].students[si];
-        document.getElementById('chart-label').innerText = s.n.toUpperCase() + " // ANALYSIS";
+        const tasks = data[activeClass].tasks;
+        
+        let avg = 0;
+        tasks.forEach((t, i) => { avg += ((s.s[i] || 0) * (t.w / 100)); });
+
+        // Prepare chart data: All assignments + Final Average bar
+        const labels = [...tasks.map(t => t.n), "OVERALL AVG"];
+        const scores = [...s.s, avg.toFixed(1)];
+        const colors = [...tasks.map(() => 'rgba(0, 242, 255, 0.3)'), 'rgba(188, 19, 254, 0.6)'];
+        const borders = [...tasks.map(() => '#00f2ff'), '#bc13fe'];
+
+        document.getElementById('chart-label').innerText = s.n.toUpperCase();
         if(myChart) myChart.destroy();
         myChart = new Chart(document.getElementById('chartObj'), {
             type: 'bar',
-            data: { labels: data[activeClass].tasks.map(t=>t.n), 
-                    datasets: [{ data: s.s, backgroundColor: 'rgba(0, 242, 255, 0.2)', borderColor: '#00f2ff', borderWidth: 1 }] },
+            data: { labels: labels, datasets: [{ data: scores, backgroundColor: colors, borderColor: borders, borderWidth: 2 }] },
             options: { 
                 responsive: true, maintainAspectRatio: false,
                 plugins: { legend: { display: false } },
                 scales: { 
-                    y: { min: 0, max: 100, ticks: { stepSize: 5, color: '#64748b', font: { size: 9 } } },
-                    x: { ticks: { color: '#64748b', font: { size: 9 } } }
+                    y: { min: 0, max: 100, ticks: { stepSize: 5, color: '#64748b' } },
+                    x: { ticks: { color: '#64748b', font: { size: 10 } } }
                 }
             }
         });
@@ -158,12 +164,12 @@
 
     function addClass() { let n = prompt("Class Name:"); if(n){ data[n] = {tasks:[], students:[]}; activeClass=n; sync(); } }
     function cloneClass() { let n = prompt("Clone Name:"); if(n){ data[n] = JSON.parse(JSON.stringify(data[activeClass])); data[n].students.forEach(s=>{s.s=s.s.map(()=>0); s.c=s.c.map(()=>"");}); activeClass=n; sync(); } }
-    function deleteClass(c) { if(confirm("Delete Class?")){ delete data[c]; activeClass=Object.keys(data)[0]||''; sync(); } }
+    function deleteClass(c) { if(confirm("Purge Class?")){ delete data[c]; activeClass=Object.keys(data)[0]||''; sync(); } }
     function addStudent() { data[activeClass].students.push({n:"New Student", s:data[activeClass].tasks.map(()=>0), c:data[activeClass].tasks.map(()=>"")}); sync(); }
     function delStudent(i) { if(confirm("Delete Student?")){ data[activeClass].students.splice(i,1); sync(); } }
     function addAssignment() { data[activeClass].tasks.push({n:"New Task", w:0}); data[activeClass].students.forEach(s=>{s.s.push(0); s.c.push("");}); sync(); }
     function delTask(i) { if(confirm("Delete Task?")){ data[activeClass].tasks.splice(i,1); data[activeClass].students.forEach(s=>{s.s.splice(i,1); s.c.splice(i,1);}); sync(); } }
-    function saveData() { const b = new Blob([JSON.stringify(data)], {type:"text/plain"}); const a = document.createElement('a'); a.href=URL.createObjectURL(b); a.download="EliteMark_Backup.txt"; a.click(); }
+    function saveData() { const b = new Blob([JSON.stringify(data)], {type:"text/plain"}); const a = document.createElement('a'); a.href=URL.createObjectURL(b); a.download="EliteMark_Data.txt"; a.click(); }
     function loadData(e) { const r = new FileReader(); r.onload=(ev)=>{data=JSON.parse(ev.target.result); sync();}; r.readAsText(e.target.files[0]); }
     window.onload = render;
 </script>
