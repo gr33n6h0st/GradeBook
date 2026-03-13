@@ -3,106 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TechMark Pro | Modern Edition</title>
+    <title>TechMark Pro | Final Version</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary: #4f46e5;
-            --bg: #f8fafc;
-            --card: #ffffff;
-            --border: #e2e8f0;
-            --text-main: #0f172a;
-            --text-muted: #64748b;
-        }
-
+        :root { --primary: #4f46e5; --bg: #f8fafc; --card: #ffffff; --border: #e2e8f0; --text: #0f172a; }
         * { box-sizing: border-box; }
-        body { 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-            margin: 0; display: flex; background: var(--bg); color: var(--text-main); 
-        }
-
-        /* Navigation */
-        nav { width: 280px; height: 100vh; background: var(--card); border-right: 1px solid var(--border); padding: 2.5rem; position: fixed; }
-        .logo { font-weight: 800; font-size: 1.2rem; color: var(--primary); margin-bottom: 3rem; }
-        .nav-btn { 
-            width: 100%; padding: 12px; margin-bottom: 8px; border: none; border-radius: 12px; 
-            background: transparent; color: var(--text-muted); cursor: pointer; text-align: left; font-weight: 600;
-        }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; display: flex; background: var(--bg); color: var(--text); }
+        
+        /* Nav */
+        nav { width: 260px; height: 100vh; background: var(--card); border-right: 1px solid var(--border); padding: 2rem; position: fixed; }
+        .nav-btn { width: 100%; padding: 12px; margin-bottom: 8px; border: none; border-radius: 10px; background: transparent; cursor: pointer; text-align: left; font-weight: 600; color: #64748b; }
         .active-nav { background: #eff6ff; color: var(--primary); }
 
-        /* Main Workspace */
-        main { margin-left: 280px; padding: 4rem; width: 100%; max-width: 1400px; }
-        .top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 3rem; }
-
-        /* Table Design */
-        .card { background: var(--card); border-radius: 16px; border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); overflow: hidden; margin-bottom: 2rem; }
-        table { width: 100%; border-collapse: collapse; }
-        th { background: #f1f5f9; padding: 16px; text-align: left; font-size: 0.7rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--border); }
-        td { padding: 16px; border-bottom: 1px solid var(--border); font-variant-numeric: tabular-nums; }
+        /* Main */
+        main { margin-left: 260px; padding: 3rem; width: 100%; max-width: 1600px; }
+        .card { background: var(--card); border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 2px 4px rgba(0,0,0,0.02); overflow: hidden; margin-bottom: 2rem; }
         
-        /* Interactive Cells */
-        [contenteditable="true"] { 
-            outline: none; padding: 6px 10px; border-radius: 6px; border: 1px solid transparent; transition: 0.2s;
-        }
+        table { width: 100%; border-collapse: collapse; table-layout: auto; }
+        th { background: #f1f5f9; padding: 12px 15px; text-align: left; font-size: 0.7rem; font-weight: 800; color: #64748b; text-transform: uppercase; border-bottom: 1px solid var(--border); }
+        td { padding: 10px 15px; border-bottom: 1px solid var(--border); vertical-align: top; }
+
+        /* Inputs */
+        [contenteditable="true"] { outline: none; padding: 8px; border-radius: 4px; border: 1px solid transparent; min-height: 1em; }
         [contenteditable="true"]:focus { background: #fffbeb; border: 1px solid #fbbf24; }
-
-        .weight-tag { display: block; font-size: 0.65rem; color: var(--primary); margin-top: 4px; font-weight: 800; }
-        .final-cell { font-weight: 800; color: var(--primary); font-size: 1.1rem; }
-
-        /* Modern Chart Section */
-        .analytics-panel { display: grid; grid-template-columns: 320px 1fr; gap: 4rem; padding: 2rem; }
-        .btn { padding: 12px 24px; border-radius: 10px; font-weight: 700; cursor: pointer; border: none; transition: 0.2s; }
-        .btn-primary { background: var(--primary); color: white; }
-        .btn-ghost { background: #f1f5f9; color: var(--text-main); margin-right: 10px; }
         
-        .delete-icon { color: #f87171; cursor: pointer; float: right; opacity: 0.3; }
-        .delete-icon:hover { opacity: 1; }
+        .weight-label { font-size: 0.65rem; color: var(--primary); font-weight: 800; display: block; }
+        .final-avg { font-weight: 800; color: var(--primary); font-size: 1.1rem; }
+        .comment-cell { font-size: 0.85rem; color: #475569; font-style: italic; min-width: 200px; }
+
+        .btn { padding: 10px 20px; border-radius: 8px; font-weight: 700; cursor: pointer; border: none; transition: 0.2s; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-ghost { background: #f1f5f9; color: var(--text); margin-right: 10px; }
+
+        .delete-btn { color: #f87171; cursor: pointer; font-size: 1.2rem; line-height: 0; }
+        
+        .analytics-container { display: grid; grid-template-columns: 300px 1fr; gap: 2rem; padding: 2rem; }
     </style>
 </head>
 <body>
 
 <nav>
-    <div class="logo">TECHMARK PRO</div>
+    <div style="font-weight:800; color:var(--primary); margin-bottom:2rem;">TECHMARK v6</div>
     <button id="btn-TEJ3M" class="nav-btn active-nav" onclick="switchClass('TEJ3M')">Comp Eng (TEJ3M)</button>
     <button id="btn-TDJ1O" class="nav-btn" onclick="switchClass('TDJ1O')">Tech Design (TDJ1O)</button>
-    <div style="margin-top: auto; padding-top: 2rem; border-top: 1px solid var(--border);">
-        <button class="btn btn-primary" style="width: 100%;" onclick="saveData()">Sync Changes</button>
+    <div style="margin-top:auto; padding-top:2rem;">
+        <button class="btn btn-primary" style="width:100%" onclick="saveToStorage()">💾 Final Sync</button>
     </div>
 </nav>
 
 <main>
-    <div class="top-row">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2rem;">
+        <h1 id="class-title" style="margin:0;">Class Gradebook</h1>
         <div>
-            <h1 id="class-title" style="margin:0; font-weight: 800;">Computer Engineering</h1>
-            <p id="class-code" style="color: var(--text-muted); margin: 4px 0 0;">Semester 2 Gradebook</p>
-        </div>
-        <div>
-            <button class="btn btn-ghost" onclick="addAssignment()">+ New Assignment</button>
-            <button class="btn btn-primary" onclick="addStudent()">+ New Student</button>
+            <button class="btn btn-ghost" onclick="addAssignment()">+ Add Project</button>
+            <button class="btn btn-primary" onclick="addStudent()">+ Add Student</button>
         </div>
     </div>
 
     <div class="card">
         <table>
-            <thead id="table-head"></thead>
-            <tbody id="table-body"></tbody>
+            <thead id="t-head"></thead>
+            <tbody id="t-body"></tbody>
         </table>
     </div>
 
-    <div id="analytics-area" class="card" style="display:none; background: #fafafa;">
-        <div class="analytics-panel">
+    <div id="ana-card" class="card" style="display:none; background:#fafafa;">
+        <div class="analytics-container">
             <div>
-                <span style="font-size: 0.7rem; font-weight: 800; color: var(--text-muted);">STUDENT PERFORMANCE</span>
-                <h2 id="ana-name" style="margin: 0.5rem 0 1rem; font-size: 1.8rem;">---</h2>
-                <div style="background: white; padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border);">
-                    <div style="font-size: 0.7rem; color: var(--text-muted);">OVERALL GRADE</div>
-                    <div id="ana-grade" style="font-size: 2.5rem; font-weight: 800; color: var(--primary);">0%</div>
-                </div>
+                <h2 id="ana-name" style="margin:0;">Student</h2>
+                <div id="ana-grade" style="font-size:3rem; font-weight:800; color:var(--primary);">0%</div>
+                <p style="font-size:0.8rem; color:#64748b;">Current Weighted Average</p>
             </div>
-            <div style="height: 300px; position: relative;">
-                <canvas id="modernChart"></canvas>
-            </div>
+            <div style="height:250px;"><canvas id="chartCanvas"></canvas></div>
         </div>
     </div>
 </main>
@@ -111,14 +84,14 @@
     let currentClass = 'TEJ3M';
     let myChart = null;
 
-    let db = JSON.parse(localStorage.getItem('techmark_v5')) || {
+    let db = JSON.parse(localStorage.getItem('techmark_v6')) || {
         'TEJ3M': {
             tasks: [{name: "Breadboard", w: 20}, {name: "Arduino", w: 30}],
-            students: [{name: "Marcus Vane", scores: [85, 92]}]
+            students: [{name: "Marcus Vane", scores: [85, 92], note: "Excellent soldering skills."}]
         },
         'TDJ1O': {
             tasks: [{name: "Sketching", w: 50}],
-            students: [{name: "Elena Rodriguez", scores: [88]}]
+            students: [{name: "Elena Rodriguez", scores: [88], note: "Requires more focus on orthographic views."}]
         }
     };
 
@@ -126,65 +99,84 @@
         currentClass = id;
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active-nav'));
         document.getElementById('btn-'+id).classList.add('active-nav');
-        document.getElementById('analytics-area').style.display = 'none';
+        document.getElementById('ana-card').style.display = 'none';
         render();
     }
 
     function render() {
         const course = db[currentClass];
-        const head = document.getElementById('table-head');
-        const body = document.getElementById('table-body');
+        const head = document.getElementById('t-head');
+        const body = document.getElementById('t-body');
 
-        // Headers
+        // Header Render
         let hRow = `<tr><th>Student Name</th>`;
         course.tasks.forEach((t, i) => {
             hRow += `<th>
-                <span class="delete-icon" onclick="deleteTask(${i})">×</span>
                 <div contenteditable="true" onblur="updateTask(${i},'name',this.innerText)">${t.name}</div>
-                <span class="weight-tag" contenteditable="true" onblur="updateTask(${i},'w',this.innerText)">${t.w}%</span>
+                <span class="weight-label" contenteditable="true" onblur="updateTask(${i},'w',this.innerText)">${t.w}%</span>
+                <span class="delete-btn" onclick="deleteTask(${i})">×</span>
             </th>`;
         });
-        hRow += `<th>Final Avg</th><th style="width:80px"></th></tr>`;
+        hRow += `<th>Final</th><th>Anecdotal Comments</th><th></th></tr>`;
         head.innerHTML = hRow;
 
-        // Rows
+        // Body Render
         body.innerHTML = '';
         course.students.forEach((s, sIdx) => {
-            let tr = document.createElement('tr');
             let weightedSum = 0; let weightUsed = 0;
-
-            let rowHTML = `<td contenteditable="true" onkeydown="handleEnter(event)" onblur="updateSName(${sIdx},this.innerText)" style="font-weight:600">${s.name}</td>`;
+            let tr = document.createElement('tr');
+            
+            let rowHTML = `<td contenteditable="true" onkeydown="handleKey(event)" onblur="updateSName(${sIdx},this.innerText)" style="font-weight:600">${s.name}</td>`;
             
             course.tasks.forEach((t, tIdx) => {
-                let val = s.scores[tIdx] || 0;
-                weightedSum += (val * (t.w / 100));
+                let score = s.scores[tIdx] || 0;
+                weightedSum += (score * (t.w / 100));
                 weightUsed += (t.w / 100);
-                rowHTML += `<td contenteditable="true" onkeydown="handleEnter(event)" onblur="updateScore(${sIdx},${tIdx},this.innerText)">${val}</td>`;
+                rowHTML += `<td contenteditable="true" onkeydown="handleKey(event)" oninput="liveUpdate(${sIdx}, ${tIdx}, this.innerText)">${score}</td>`;
             });
 
             let final = weightUsed > 0 ? (weightedSum / weightUsed).toFixed(1) : 0;
-            rowHTML += `<td class="final-cell">${final}%</td>`;
-            rowHTML += `<td><button class="btn-ghost" style="padding:5px 10px; font-size:0.6rem;" onclick="viewAna(${sIdx})">STATS</button></td>`;
+            rowHTML += `<td id="final-${sIdx}" class="final-avg">${final}%</td>`;
+            rowHTML += `<td contenteditable="true" class="comment-cell" onblur="updateNote(${sIdx}, this.innerText)">${s.note || ""}</td>`;
+            rowHTML += `<td><button class="btn-ghost" style="padding:4px 8px; font-size:0.6rem" onclick="viewStats(${sIdx})">STATS</button></td>`;
             
             tr.innerHTML = rowHTML;
             body.appendChild(tr);
         });
     }
 
-    // Math & Updates
-    function updateScore(s, t, v) { db[currentClass].students[s].scores[t] = parseFloat(v) || 0; render(); }
-    function updateTask(i, f, v) { db[currentClass].tasks[i][f] = f === 'w' ? (parseFloat(v) || 0) : v; render(); }
-    function updateSName(i, v) { db[currentClass].students[i].name = v; }
+    // REAL-TIME MATH
+    function liveUpdate(sIdx, tIdx, val) {
+        const score = parseFloat(val) || 0;
+        db[currentClass].students[sIdx].scores[tIdx] = score;
+        
+        // Recalculate Final without full re-render
+        let weightedSum = 0; let weightUsed = 0;
+        const course = db[currentClass];
+        course.tasks.forEach((t, i) => {
+            weightedSum += (course.students[sIdx].scores[i] * (t.w / 100));
+            weightUsed += (t.w / 100);
+        });
+        const final = weightUsed > 0 ? (weightedSum / weightUsed).toFixed(1) : 0;
+        document.getElementById(`final-${sIdx}`).innerText = final + "%";
+    }
 
-    function handleEnter(e) {
+    // KEYBOARD NAVIGATION
+    function handleKey(e) {
         if (e.key === 'Enter') {
             e.preventDefault();
             const cell = e.target;
             const colIndex = cell.cellIndex;
             const nextRow = cell.parentElement.nextElementSibling;
-            if (nextRow) nextRow.cells[colIndex].focus();
+            if (nextRow && nextRow.cells[colIndex]) {
+                nextRow.cells[colIndex].focus();
+            }
         }
     }
+
+    function updateTask(i, f, v) { db[currentClass].tasks[i][f] = f === 'w' ? (parseFloat(v) || 0) : v; render(); }
+    function updateSName(i, v) { db[currentClass].students[i].name = v; }
+    function updateNote(i, v) { db[currentClass].students[i].note = v; }
 
     function addAssignment() {
         db[currentClass].tasks.push({name: "New Task", w: 10});
@@ -193,53 +185,41 @@
     }
 
     function addStudent() {
-        db[currentClass].students.push({name: "New Student", scores: db[currentClass].tasks.map(()=>0)});
+        db[currentClass].students.push({name: "New Student", scores: db[currentClass].tasks.map(()=>0), note: ""});
         render();
     }
 
     function deleteTask(i) {
-        if(confirm("Delete assignment?")) {
+        if(confirm("Delete column?")) {
             db[currentClass].tasks.splice(i, 1);
             db[currentClass].students.forEach(s => s.scores.splice(i, 1));
             render();
         }
     }
 
-    function viewAna(idx) {
+    function viewStats(idx) {
         const s = db[currentClass].students[idx];
         const tasks = db[currentClass].tasks;
-        document.getElementById('analytics-area').style.display = 'block';
+        document.getElementById('ana-card').style.display = 'block';
         document.getElementById('ana-name').innerText = s.name;
-        
-        let ws = 0; let wu = 0;
-        tasks.forEach((t, i) => { ws += (s.scores[i]*(t.w/100)); wu += (t.w/100); });
-        document.getElementById('ana-grade').innerText = (wu > 0 ? (ws/wu).toFixed(1) : 0) + "%";
+        document.getElementById('ana-grade').innerText = document.getElementById(`final-${idx}`).innerText;
 
         if(myChart) myChart.destroy();
-        myChart = new Chart(document.getElementById('modernChart'), {
+        myChart = new Chart(document.getElementById('chartCanvas'), {
             type: 'bar',
             data: {
                 labels: tasks.map(t => t.name),
-                datasets: [{
-                    label: 'Score',
-                    data: s.scores,
-                    backgroundColor: '#4f46e5',
-                    borderRadius: 6,
-                    barThickness: 30
-                }]
+                datasets: [{ label: 'Score', data: s.scores, backgroundColor: '#4f46e5', borderRadius: 8 }]
             },
-            options: {
-                responsive: true, maintainAspectRatio: false,
+            options: { 
+                responsive: true, maintainAspectRatio: false, 
                 plugins: { legend: { display: false } },
-                scales: {
-                    y: { beginAtZero: true, max: 100, grid: { color: '#f1f5f9' }, border: { display: false } },
-                    x: { grid: { display: false } }
-                }
+                scales: { y: { min: 0, max: 100 }, x: { grid: { display: false } } }
             }
         });
     }
 
-    function saveData() { localStorage.setItem('techmark_v5', JSON.stringify(db)); alert("Sync Successful."); }
+    function saveToStorage() { localStorage.setItem('techmark_v6', JSON.stringify(db)); alert("Sync Successful."); }
 
     window.onload = render;
 </script>
