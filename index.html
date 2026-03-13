@@ -2,76 +2,62 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>EliteMark // Precision Command</title>
+    <title>EliteMark // Final Fix</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --ui-cyan: #00f2ff;
-            --ui-magenta: #bc13fe;
-            --ui-amber: #ffb700;
-            --ui-red: #ff3131;
-            --bg-deep: #05070a;
-            --bg-card: #0d1117;
-            --border: rgba(255, 255, 255, 0.1);
-            --text: #e2e8f0;
+            --ui-cyan: #00f2ff; --ui-magenta: #bc13fe; --ui-amber: #ffb700;
+            --ui-red: #ff3131; --bg-deep: #05070a; --bg-card: #0d1117;
+            --border: rgba(255, 255, 255, 0.1); --text: #e2e8f0;
         }
-
         body { font-family: 'Inter', sans-serif; margin: 0; background: var(--bg-deep); color: var(--text); height: 100vh; display: flex; overflow: hidden; }
-
-        nav { width: 220px; background: #080a0d; border-right: 1px solid var(--border); padding: 1rem; display: flex; flex-direction: column; flex-shrink: 0; }
-        .nav-btn { width: 100%; padding: 8px 12px; margin-bottom: 4px; background: transparent; border: 1px solid transparent; color: #64748b; cursor: pointer; text-align: left; font-size: 0.75rem; border-radius: 4px; font-family: 'Orbitron'; }
-        .active-nav { color: var(--ui-cyan); border-color: var(--ui-cyan); background: rgba(0,242,255,0.05); }
-
-        main { flex: 1; padding: 1rem 1.5rem; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
         
-        .matrix-container { flex: 1; overflow: auto; border: 1px solid var(--border); border-radius: 4px; background: var(--bg-card); }
+        /* Sidebar */
+        nav { width: 230px; background: #080a0d; border-right: 1px solid var(--border); padding: 1rem; display: flex; flex-direction: column; flex-shrink: 0; }
+        .class-item { display: flex; align-items: center; margin-bottom: 4px; gap: 8px; background: rgba(255,255,255,0.02); border-radius: 4px; padding-left: 8px; }
+        .nav-btn { flex-grow: 1; padding: 10px; background: transparent; border: none; color: #64748b; cursor: pointer; text-align: left; font-family: 'Orbitron'; font-size: 0.75rem; }
+        .active-nav { color: var(--ui-cyan); font-weight: bold; }
+        
+        /* Table */
+        main { flex: 1; padding: 1rem; overflow-y: auto; display: flex; flex-direction: column; }
+        .matrix-container { flex: 1; overflow: auto; border: 1px solid var(--border); background: var(--bg-card); }
         table { border-collapse: separate; border-spacing: 0; width: 100%; table-layout: fixed; }
-        
-        th, td { padding: 6px 8px; border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); }
-        th { position: sticky; top: 0; background: #161e27; z-index: 10; font-family: 'Orbitron'; font-size: 0.55rem; color: var(--ui-cyan); text-align: center; height: 50px; }
-        th:first-child, td:first-child { position: sticky; left: 0; background: #111821; z-index: 11; width: 180px; min-width: 180px; }
+        th, td { padding: 8px; border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); }
+        th { position: sticky; top: 0; background: #161e27; z-index: 10; font-family: 'Orbitron'; font-size: 0.6rem; color: var(--ui-cyan); }
+        th:first-child, td:first-child { position: sticky; left: 0; background: #111821; z-index: 11; width: 200px; }
 
-        [contenteditable] { outline: none; padding: 4px; border-radius: 2px; border: 1px solid transparent; }
-        [contenteditable]:focus { background: rgba(255,255,255,0.05); border-color: var(--ui-cyan); }
+        [contenteditable] { outline: none; padding: 4px; min-height: 1em; display: block; }
+        [contenteditable]:focus { background: rgba(0,242,255,0.05); border-radius: 2px; }
         
-        .score-cell { font-family: 'Orbitron'; color: var(--ui-amber); text-align: center; font-size: 1rem; width: 60px; }
-        .name-cell { font-weight: 600; color: #fff; cursor: pointer; font-size: 0.85rem; }
-        
-        .comment-field { background: #05070a; border: 1px solid #2d333b; border-radius: 3px; min-height: 28px; font-size: 0.7rem; color: #94a3b8; width: 100%; margin-top: 2px; }
-        .avg-cell { font-family: 'Orbitron'; font-weight: 700; text-align: center; font-size: 0.9rem; width: 80px; }
-        .fail { color: var(--ui-red) !important; }
+        .score-cell { font-family: 'Orbitron'; color: var(--ui-amber); text-align: center; font-size: 1.1rem; }
+        .name-txt { color: #fff; font-weight: 600; cursor: pointer; }
+        .comment-field { background: #000; border: 1px solid #333; font-size: 0.7rem; color: #888; margin-top: 4px; min-height: 30px; }
 
-        #student-analysis { background: var(--bg-card); border: 1px solid var(--ui-magenta); border-radius: 4px; padding: 10px; margin-top: 10px; display: none; }
-
-        .btn { padding: 5px 10px; background: transparent; border: 1px solid var(--ui-cyan); color: var(--ui-cyan); font-family: 'Orbitron'; font-size: 0.55rem; cursor: pointer; border-radius: 3px; }
-        .btn:hover { background: var(--ui-cyan); color: #000; }
+        .btn { padding: 6px 12px; background: transparent; border: 1px solid var(--ui-cyan); color: var(--ui-cyan); font-family: 'Orbitron'; font-size: 0.6rem; cursor: pointer; }
+        .del-btn { color: var(--ui-red); cursor: pointer; font-weight: bold; font-size: 1.1rem; padding: 0 5px; }
         
-        /* Delete buttons visibility */
-        .del-x { color: var(--ui-red); cursor: pointer; opacity: 0.4; margin-right: 6px; font-weight: bold; font-size: 14px; }
-        .del-x:hover { opacity: 1; }
+        #student-analysis { height: 200px; border-top: 2px solid var(--ui-magenta); padding: 10px; background: #080a0d; display: none; }
     </style>
 </head>
 <body>
 
 <nav>
-    <div style="font-family:'Orbitron'; font-size: 0.65rem; color: var(--ui-cyan); margin-bottom: 1rem; opacity: 0.7;">ELITEMARK_V28</div>
+    <div style="font-family:'Orbitron'; color:var(--ui-cyan); font-size:0.8rem; margin-bottom:1rem;">ELITEMARK_V29</div>
     <div style="display:flex; gap:5px; margin-bottom:1rem;">
-        <button class="btn" style="flex:1" onclick="addNewClass()">+ NEW</button>
-        <button class="btn" style="flex:1; border-color:var(--ui-magenta); color:var(--ui-magenta);" onclick="duplicateClass()">CLONE</button>
+        <button class="btn" style="flex:1" onclick="addNewClass()">+ CLASS</button>
+        <button class="btn" style="flex:1" onclick="duplicateClass()">CLONE</button>
     </div>
-    <div id="class-list" style="flex-grow:1; overflow-y:auto;"></div>
-    <div style="padding-top:0.5rem; border-top:1px solid var(--border)">
-        <button class="btn" style="width:100%; margin-bottom:4px;" onclick="exportToFile()">SAVE BACKUP</button>
-        <button class="btn" style="width:100%; border-color: #444; color: #888;" onclick="document.getElementById('fileInput').click()">LOAD BACKUP</button>
-        <input type="file" id="fileInput" style="display:none" onchange="importFromFile(event)">
-    </div>
+    <div id="class-list" style="flex:1; overflow-y:auto;"></div>
+    <button class="btn" onclick="exportToFile()" style="margin-top:10px">SAVE BACKUP</button>
+    <button class="btn" onclick="document.getElementById('fileInput').click()" style="margin-top:5px; border-color:#444">LOAD BACKUP</button>
+    <input type="file" id="fileInput" style="display:none" onchange="importFromFile(event)">
 </nav>
 
 <main>
-    <div class="header" style="display:flex; justify-content:space-between; align-items:center;">
-        <h1 id="class-title" style="font-family:'Orbitron'; font-size:1rem; margin:0;">---</h1>
-        <div style="display:flex; gap:8px">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <h1 id="class-title" style="font-family:'Orbitron'; margin:0; font-size:1.2rem;">---</h1>
+        <div>
             <button class="btn" onclick="addAssignment()">+ ASSIGNMENT</button>
             <button class="btn" onclick="addStudent()">+ STUDENT</button>
         </div>
@@ -85,120 +71,91 @@
     </div>
 
     <div id="student-analysis">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
-            <div id="chart-title" style="font-family:'Orbitron'; font-size:0.6rem; color:var(--ui-magenta);">DATA_VIS</div>
-            <button class="btn" style="border-color:var(--ui-magenta); color:var(--ui-magenta); font-size:0.5rem;" onclick="closeChart()">CLOSE ×</button>
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span id="chart-title" style="font-family:'Orbitron'; font-size:0.7rem; color:var(--ui-magenta);"></span>
+            <button class="btn" style="border-color:var(--ui-magenta)" onclick="document.getElementById('student-analysis').style.display='none'">CLOSE</button>
         </div>
-        <div style="height: 150px;"><canvas id="studentChart"></canvas></div>
+        <canvas id="studentChart"></canvas>
     </div>
 </main>
 
 <script>
-    let activeClass = 'TEJ3M';
+    let activeClass = 'Class 1';
     let myChart = null;
-    let currentVisibleStudent = null;
 
-    let data = JSON.parse(localStorage.getItem('eliteMark_v28')) || {
-        'TEJ3M': { tasks: [{n: "Quiz 1", w: 100}], students: [{n: "Student Example", s: [0], c: [""]}] }
+    let data = JSON.parse(localStorage.getItem('eliteMark_v29')) || {
+        'Class 1': { tasks: [{n: "Lab 1", w: 100}], students: [{n: "Student Name", s: [0], c: [""]}] }
     };
 
-    document.addEventListener('keydown', e => {
-        if ((e.key === 'Enter' || e.key === 'Tab') && e.target.hasAttribute('contenteditable')) {
-            if (e.key === 'Enter') e.preventDefault(); 
-            e.target.blur();
-        }
-    });
-
-    function sync() { localStorage.setItem('eliteMark_v28', JSON.stringify(data)); }
+    function sync() { localStorage.setItem('eliteMark_v29', JSON.stringify(data)); render(); }
 
     function render() {
         const list = document.getElementById('class-list');
         list.innerHTML = '';
         Object.keys(data).forEach(c => {
-            list.innerHTML += `<div style="display:flex; align-items:center; margin-bottom:2px;">
-                <span class="del-x" style="font-size:10px;" onclick="deleteClass('${c}')">×</span>
-                <button class="nav-btn ${c===activeClass?'active-nav':''}" onclick="activeClass='${c}';closeChart();render()">${c}</button>
-            </div>`;
+            const div = document.createElement('div');
+            div.className = 'class-item';
+            div.innerHTML = `<span class="del-btn" onclick="deleteClass('${c}')">×</span>
+                             <button class="nav-btn ${c===activeClass?'active-nav':''}" onclick="changeClass('${c}')">${c}</button>`;
+            list.appendChild(div);
         });
 
         const current = data[activeClass] || {tasks:[], students:[]};
         document.getElementById('class-title').innerText = activeClass;
 
-        let h = `<tr><th style="width:180px">Student Personnel</th>`;
+        let h = `<tr><th>Student Name</th>`;
         current.tasks.forEach((t, i) => {
-            h += `<th style="width:120px">
-                <span class="del-x" onclick="delTask(${i})">×</span>
-                <span contenteditable onblur="data['${activeClass}'].tasks[${i}].n=this.innerText;sync()">${t.n}</span>
-                <div style="font-size:0.45rem; color:var(--ui-cyan)" contenteditable onblur="updateWeight(${i}, this.innerText)">${t.w}%</div>
-            </th>`;
+            h += `<th><span class="del-btn" onclick="delTask(${i})">×</span>
+                <div contenteditable onblur="data['${activeClass}'].tasks[${i}].n=this.innerText;sync()">${t.n}</div>
+                <div style="color:var(--ui-cyan); font-size:0.5rem;" contenteditable onblur="data['${activeClass}'].tasks[${i}].w=parseInt(this.innerText)||0;sync()">${t.w}%</div></th>`;
         });
-        h += `<th style="width:80px">AVG</th></tr>`;
+        h += `<th>AVG</th></tr>`;
         document.getElementById('thead').innerHTML = h;
 
         let b = '';
         current.students.forEach((s, si) => {
-            let rowAvg = 0;
-            b += `<tr><td class="name-cell">
-                <span class="del-x" onclick="delStudent(${si})">×</span>
-                <span onclick="toggleChart(${si})">${s.n}</span>
-            </td>`;
+            let avg = 0;
+            b += `<tr><td><span class="del-btn" onclick="delStudent(${si})">×</span>
+                <span class="name-txt" contenteditable onblur="data['${activeClass}'].students[${si}].n=this.innerText;sync()" onclick="showChart(${si})">${s.n}</span></td>`;
             current.tasks.forEach((t, ti) => {
-                rowAvg += ((s.s[ti] || 0) * (t.w / 100));
-                b += `<td>
-                    <div class="score-cell" contenteditable onblur="updateScore(${si}, ${ti}, this.innerText)">${s.s[ti] || 0}</div>
-                    <div class="comment-field" contenteditable onblur="data['${activeClass}'].students[${si}].c[${ti}]=this.innerText;sync()">${s.c[ti] || ""}</div>
-                </td>`;
+                avg += ((s.s[ti] || 0) * (t.w / 100));
+                b += `<td><div class="score-cell" contenteditable onblur="data['${activeClass}'].students[${si}].s[${ti}]=parseFloat(this.innerText)||0;sync()">${s.s[ti]||0}</div>
+                          <div class="comment-field" contenteditable onblur="data['${activeClass}'].students[${si}].c[${ti}]=this.innerText;sync()">${s.c[ti]||""}</div></td>`;
             });
-            b += `<td class="avg-cell ${rowAvg < 50 ? 'fail' : ''}">${rowAvg.toFixed(1)}%</td></tr>`;
+            b += `<td style="font-family:Orbitron; text-align:center;">${avg.toFixed(1)}%</td></tr>`;
         });
         document.getElementById('tbody').innerHTML = b;
     }
 
-    function toggleChart(si) { (currentVisibleStudent === si) ? closeChart() : showChart(si); }
+    function changeClass(c) { activeClass = c; render(); }
+    function addNewClass() { let n = prompt("New Class Name:"); if(n) { data[n] = {tasks:[], students:[]}; activeClass=n; sync(); } }
+    function deleteClass(c) { if(confirm("Delete Class?")) { delete data[c]; activeClass=Object.keys(data)[0] || ''; sync(); } }
+    function delStudent(i) { if(confirm("Delete Student?")) { data[activeClass].students.splice(i,1); sync(); } }
+    function delTask(i) { if(confirm("Delete Assignment?")) { data[activeClass].tasks.splice(i,1); data[activeClass].students.forEach(s=> {s.s.splice(i,1); s.c.splice(i,1);}); sync(); } }
+    function addStudent() { data[activeClass].students.push({n:"New Name", s:data[activeClass].tasks.map(()=>0), c:data[activeClass].tasks.map(()=>"")}); sync(); }
+    function addAssignment() { data[activeClass].tasks.push({n:"New Task", w:0}); data[activeClass].students.forEach(s=>{s.s.push(0); s.c.push("");}); sync(); }
+    function duplicateClass() { let n = prompt("Clone Name:"); if(n) { data[n] = JSON.parse(JSON.stringify(data[activeClass])); data[n].students.forEach(s=>{s.s=s.s.map(()=>0); s.c=s.c.map(()=>"");}); activeClass=n; sync(); } }
 
     function showChart(si) {
-        currentVisibleStudent = si;
-        const s = data[activeClass].students[si];
         document.getElementById('student-analysis').style.display = 'block';
+        const s = data[activeClass].students[si];
+        document.getElementById('chart-title').innerText = s.n + " // PROGRESS";
         if(myChart) myChart.destroy();
-        myChart = new Chart(document.getElementById('studentChart').getContext('2d'), {
+        myChart = new Chart(document.getElementById('studentChart'), {
             type: 'bar',
-            data: { labels: data[activeClass].tasks.map(t => t.n), datasets: [{ data: s.s, backgroundColor: 'rgba(188, 19, 254, 0.4)', borderColor: '#bc13fe', borderWidth: 1 }] },
+            data: { labels: data[activeClass].tasks.map(t=>t.n), datasets: [{ data: s.s, backgroundColor: '#bc13fe' }] },
             options: { 
-                responsive: true, 
-                maintainAspectRatio: false, 
-                plugins: { legend: { display: false } }, 
+                responsive: true, maintainAspectRatio: false,
                 scales: { 
-                    y: { 
-                        min: 0, 
-                        max: 100, 
-                        ticks: { 
-                            stepSize: 5, // Count by 5
-                            color: '#64748b', 
-                            font: {size: 10} 
-                        } 
-                    }, 
-                    x: { ticks: { color: '#64748b', font: {size: 10} } } 
-                } 
+                    y: { min: 0, max: 100, ticks: { stepSize: 5, color: '#64748b' } },
+                    x: { ticks: { color: '#64748b' } }
+                }
             }
         });
     }
 
-    function closeChart() { document.getElementById('student-analysis').style.display = 'none'; currentVisibleStudent = null; }
-    function updateScore(si, ti, val) { data[activeClass].students[si].s[ti] = parseFloat(val) || 0; sync(); render(); }
-    function updateWeight(ti, val) { data[activeClass].tasks[ti].w = parseInt(val) || 0; sync(); render(); }
-    function addNewClass() { let n = prompt("Class Name:"); if(n){ data[n] = {tasks:[], students:[]}; activeClass=n; sync(); render(); } }
-    function duplicateClass() { let n = prompt("New Class Name:"); if(n){ data[n] = JSON.parse(JSON.stringify(data[activeClass])); data[n].students.forEach(s => { s.s = s.s.map(()=>0); s.c = s.c.map(()=>""); }); activeClass=n; sync(); render(); } }
-    
-    // Explicit Delete Functions
-    function deleteClass(c) { if(confirm(`Delete ${c}?`)) { delete data[c]; const keys = Object.keys(data); activeClass = keys.length > 0 ? keys[0] : ''; sync(); render(); } }
-    function delStudent(si) { if(confirm("Delete student?")) { data[activeClass].students.splice(si, 1); sync(); render(); } }
-    function delTask(ti) { if(confirm("Delete assignment?")) { data[activeClass].tasks.splice(ti, 1); data[activeClass].students.forEach(s => { s.s.splice(ti, 1); s.c.splice(ti, 1); }); sync(); render(); } }
-    
-    function addStudent() { data[activeClass].students.push({n: "New Student", s: data[activeClass].tasks.map(()=>0), c: data[activeClass].tasks.map(()=>"")}); sync(); render(); }
-    function addAssignment() { data[activeClass].tasks.push({n: "New Task", w: 0}); data[activeClass].students.forEach(s => { s.s.push(0); s.c.push(""); }); sync(); render(); }
-    function exportToFile() { const blob = new Blob([JSON.stringify(data)], {type: "text/plain"}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `EliteMark_Data.txt`; a.click(); }
-    function importFromFile(e) { const reader = new FileReader(); reader.onload = function(ev) { data = JSON.parse(ev.target.result); sync(); render(); }; reader.readAsText(e.target.files[0]); }
+    function exportToFile() { const blob = new Blob([JSON.stringify(data)], {type:"text/plain"}); const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download="EliteMark_Data.txt"; a.click(); }
+    function importFromFile(e) { const r = new FileReader(); r.onload=(ev)=>{data=JSON.parse(ev.target.result); sync();}; r.readAsText(e.target.files[0]); }
 
     window.onload = render;
 </script>
