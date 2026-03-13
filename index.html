@@ -3,236 +3,221 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tech-Grades Pro | Ontario</title>
+    <title>TechMark Pro | Dynamic Edition</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary: #6366f1; /* Indigo Modern */
-            --bg: #f8fafc;
-            --sidebar: #ffffff;
-            --text-main: #0f172a;
-            --text-muted: #64748b;
-            --card: #ffffff;
-            --border: #f1f5f9;
-        }
-
-        body { 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-            margin: 0; display: flex; 
-            background: var(--bg); color: var(--text-main); 
-        }
-
-        /* Sidebar Navigation */
-        nav { 
-            width: 280px; height: 100vh; background: var(--sidebar); 
-            border-right: 1px solid var(--border); padding: 2rem; 
-            position: fixed; box-sizing: border-box; 
-        }
-
-        .nav-header { font-weight: 800; font-size: 1.4rem; margin-bottom: 2rem; color: var(--primary); }
+        :root { --primary: #6366f1; --bg: #f8fafc; --sidebar: #ffffff; --text: #0f172a; --border: #f1f5f9; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; display: flex; background: var(--bg); color: var(--text); }
         
-        .nav-btn { 
-            width: 100%; padding: 14px; margin-bottom: 10px; 
-            background: transparent; border: none; border-radius: 12px; 
-            cursor: pointer; text-align: left; font-weight: 600; color: var(--text-muted);
-            transition: 0.3s;
-        }
-        .nav-btn:hover { background: #f1f5f9; color: var(--primary); }
-        .active-nav { background: #e0e7ff !important; color: var(--primary); }
+        /* Sidebar */
+        nav { width: 280px; height: 100vh; background: var(--sidebar); border-right: 1px solid var(--border); padding: 2rem; position: fixed; box-sizing: border-box; }
+        .nav-btn { width: 100%; padding: 14px; margin-bottom: 10px; background: transparent; border: none; border-radius: 12px; cursor: pointer; text-align: left; font-weight: 600; color: #64748b; }
+        .active-nav { background: #e0e7ff; color: var(--primary); }
 
-        /* Main Content */
-        main { margin-left: 280px; padding: 3rem; width: 100%; max-width: 1200px; }
-
-        .header-row { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2.5rem; }
+        /* Content */
+        main { margin-left: 280px; padding: 3rem; width: 100%; max-width: 1300px; }
+        .card { background: #fff; border-radius: 20px; padding: 2rem; border: 1px solid var(--border); box-shadow: 0 4px 20px rgba(0,0,0,0.03); margin-bottom: 2rem; }
         
-        /* Table Style */
-        .card { 
-            background: var(--card); border-radius: 20px; 
-            padding: 2rem; border: 1px solid var(--border);
-            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.02);
-            margin-bottom: 2rem;
-        }
+        /* Table Layout */
+        .table-container { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 15px; color: #64748b; font-size: 0.75rem; text-transform: uppercase; border-bottom: 2px solid var(--border); }
+        td { padding: 15px; border-bottom: 1px solid var(--border); }
 
-        table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
-        th { text-align: left; padding: 10px 15px; color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; }
-        td { padding: 18px 15px; background: #fff; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
-        td:first-child { border-left: 1px solid var(--border); border-radius: 12px 0 0 12px; font-weight: 600; }
-        td:last-child { border-right: 1px solid var(--border); border-radius: 0 12px 12px 0; }
-
-        /* Inputs */
-        [contenteditable="true"] { color: var(--primary); font-weight: bold; outline: none; }
+        /* Inputs & Buttons */
+        .btn { padding: 10px 18px; border-radius: 10px; border: none; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-outline { background: transparent; border: 1px solid var(--border); color: #64748b; margin-right: 8px; }
+        .btn-danger { background: #fee2e2; color: #ef4444; font-size: 0.7rem; }
         
-        .btn-action { 
-            background: var(--primary); color: white; padding: 10px 20px; 
-            border-radius: 10px; border: none; font-weight: 600; cursor: pointer;
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
-        }
+        [contenteditable="true"] { outline: none; padding: 4px; border-radius: 4px; transition: 0.2s; }
+        [contenteditable="true"]:focus { background: #f5f3ff; color: var(--primary); }
 
-        /* Profile Analytics Section */
-        .profile-grid { display: grid; grid-template-columns: 1fr 1.5fr; gap: 2rem; align-items: start; }
-        .stat-circle { 
-            width: 120px; height: 120px; border-radius: 50%; 
-            border: 8px solid #e0e7ff; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; margin: 0 auto 1.5rem;
-        }
+        /* Analytics View */
+        .analytics-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 2rem; }
     </style>
 </head>
 <body>
 
-    <nav>
-        <div class="nav-header">TechMark Pro</div>
-        <button id="btn-TEJ3M" class="nav-btn active-nav" onclick="loadClass('TEJ3M')">🔌 Comp Eng (TEJ3M)</button>
-        <button id="btn-TDJ1O" class="nav-btn" onclick="loadClass('TDJ1O')">📐 Tech Design (TDJ1O)</button>
-        <div style="position: absolute; bottom: 2rem; width: 215px;">
-            <button class="btn-action" style="width: 100%;" onclick="saveData()">Save All Changes</button>
-        </div>
-    </nav>
+<nav>
+    <h2 style="color: var(--primary); margin-bottom: 2rem;">TechMark Pro</h2>
+    <button id="btn-TEJ3M" class="nav-btn active-nav" onclick="switchClass('TEJ3M')">Comp Eng (TEJ3M)</button>
+    <button id="btn-TDJ1O" class="nav-btn" onclick="switchClass('TDJ1O')">Tech Design (TDJ1O)</button>
+    <div style="margin-top: 3rem; border-top: 1px solid var(--border); padding-top: 2rem;">
+        <button class="btn btn-primary" style="width: 100%;" onclick="saveToDisk()">💾 Save All Data</button>
+    </div>
+</nav>
 
-    <main>
-        <div class="header-row">
-            <div>
-                <h1 id="course-title" style="margin:0; font-size: 2rem;">Computer Engineering</h1>
-                <p id="course-code" style="margin:5px 0 0; color: var(--text-muted);">TEJ3M - Semester 2</p>
-            </div>
-            <button class="btn-action" onclick="addRow()">+ Add Student</button>
+<main>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+        <div>
+            <h1 id="view-title" style="margin:0;">Class Gradebook</h1>
+            <p id="view-code" style="color: #64748b; margin: 5px 0 0;">TEJ3M</p>
         </div>
+        <div>
+            <button class="btn btn-outline" onclick="addAssignment()">+ Add Assignment</button>
+            <button class="btn btn-primary" onclick="addStudent()">+ Add Student</button>
+        </div>
+    </div>
 
-        <div class="card">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Student</th>
-                        <th>Project 1</th>
-                        <th>Project 2</th>
-                        <th>Exam</th>
-                        <th>Final</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody id="grade-body"></tbody>
+    <div class="card">
+        <div class="table-container">
+            <table id="main-table">
+                <thead id="table-head"></thead>
+                <tbody id="table-body"></tbody>
             </table>
         </div>
+    </div>
 
-        <div id="analytics-section" class="card" style="display: none;">
-            <div class="profile-grid">
-                <div style="text-align: center; border-right: 1px solid var(--border); padding-right: 2rem;">
-                    <div class="stat-circle">
-                        <span style="font-size: 0.7rem; color: var(--text-muted); font-weight: bold;">GRADE</span>
-                        <span id="prof-grade" style="font-size: 1.8rem; font-weight: 800; color: var(--primary);">--</span>
-                    </div>
-                    <h2 id="prof-name" style="margin: 0;">Select a Student</h2>
-                    <p id="prof-status" style="color: #10b981; font-weight: 600; font-size: 0.9rem;">Exceeding Average</p>
-                </div>
-                <div>
-                    <canvas id="studentBarChart" height="150"></canvas>
-                </div>
-            </div>
+    <div id="analytics" class="card" style="display:none;">
+        <div class="analytics-grid">
+            <div id="student-info" style="text-align: center; border-right: 1px solid var(--border);"></div>
+            <canvas id="gradeChart" height="120"></canvas>
         </div>
-    </main>
+    </div>
+</main>
 
-    <script>
-        let currentClass = 'TEJ3M';
-        let chartInstance = null;
-        
-        // Initialize Data
-        let db = JSON.parse(localStorage.getItem('techmarks_v2')) || {
-            'TEJ3M': [{ name: "Marcus Vane", p1: 85, p2: 90, exam: 82 }],
-            'TDJ1O': [{ name: "Elena Rodriguez", p1: 78, p2: 82, exam: 88 }]
-        };
+<script>
+    let currentClass = 'TEJ3M';
+    let chartObj = null;
 
-        function loadClass(code) {
-            currentClass = code;
-            document.getElementById('course-code').innerText = `${code} - Semester 2`;
-            document.getElementById('course-title').innerText = code.startsWith('TEJ') ? "Computer Engineering" : "Technological Design";
-            
-            // UI Toggle
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active-nav'));
-            document.getElementById('btn-' + code).classList.add('active-nav');
-            
-            document.getElementById('analytics-section').style.display = 'none';
-            renderTable();
+    // Data Structure: Assignments list + Student list
+    let data = JSON.parse(localStorage.getItem('techmark_v3')) || {
+        'TEJ3M': {
+            assignments: ["Breadboard Intro", "Safety Quiz", "Arduino Project"],
+            students: [{ name: "Marcus Vane", grades: [85, 90, 88] }]
+        },
+        'TDJ1O': {
+            assignments: ["Sketching 101", "CAD Model"],
+            students: [{ name: "Elena Rodriguez", grades: [92, 84] }]
         }
+    };
 
-        function renderTable() {
-            const tbody = document.getElementById('grade-body');
-            tbody.innerHTML = '';
+    function switchClass(code) {
+        currentClass = code;
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active-nav'));
+        document.getElementById('btn-' + code).classList.add('active-nav');
+        document.getElementById('view-code').innerText = code;
+        document.getElementById('analytics').style.display = 'none';
+        render();
+    }
+
+    function render() {
+        const head = document.getElementById('table-head');
+        const body = document.getElementById('table-body');
+        const course = data[currentClass];
+
+        // 1. Render Header
+        let headHTML = `<tr><th>Student Name</th>`;
+        course.assignments.forEach((assign, idx) => {
+            headHTML += `<th>
+                <div contenteditable="true" onblur="updateAssignName(${idx}, this.innerText)">${assign}</div>
+                <button class="btn-danger" onclick="deleteAssignment(${idx})" style="padding:2px 5px; margin-top:5px;">×</button>
+            </th>`;
+        });
+        headHTML += `<th>Final Avg</th><th>Actions</th></tr>`;
+        head.innerHTML = headHTML;
+
+        // 2. Render Rows
+        body.innerHTML = '';
+        course.students.forEach((s, sIdx) => {
+            let rowHTML = `<td contenteditable="true" onblur="updateStudentName(${sIdx}, this.innerText)">${s.name}</td>`;
             
-            db[currentClass].forEach((s, i) => {
-                const final = (( ((s.p1 + s.p2)/2) * 0.7 ) + (s.exam * 0.3)).toFixed(1);
-                
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td contenteditable="true" onblur="updateData(${i},'name',this.innerText)">${s.name}</td>
-                    <td contenteditable="true" onblur="updateData(${i},'p1',this.innerText)">${s.p1}</td>
-                    <td contenteditable="true" onblur="updateData(${i},'p2',this.innerText)">${s.p2}</td>
-                    <td contenteditable="true" onblur="updateData(${i},'exam',this.innerText)">${s.exam}</td>
-                    <td style="color: var(--primary); font-weight: 800;">${final}%</td>
-                    <td style="text-align:right;"><button class="btn-action" style="background:#f1f5f9; color:var(--text-main); box-shadow:none; font-size:0.7rem;" onclick="viewStudent(${i})">ANALYTICS</button></td>
-                `;
-                tbody.appendChild(tr);
+            let sum = 0;
+            course.assignments.forEach((_, aIdx) => {
+                let grade = s.grades[aIdx] || 0;
+                sum += grade;
+                rowHTML += `<td contenteditable="true" onblur="updateGrade(${sIdx}, ${aIdx}, this.innerText)">${grade}</td>`;
             });
-        }
 
-        function updateData(i, field, val) {
-            db[currentClass][i][field] = field === 'name' ? val : (parseFloat(val) || 0);
-            renderTable();
-            if(document.getElementById('analytics-section').style.display === 'block') viewStudent(i);
-        }
-
-        function addRow() {
-            // Push exactly ONE student
-            db[currentClass].push({ name: "New Student", p1: 0, p2: 0, exam: 0 });
-            renderTable();
-        }
-
-        function viewStudent(i) {
-            const s = db[currentClass][i];
-            const final = (( ((s.p1 + s.p2)/2) * 0.7 ) + (s.exam * 0.3)).toFixed(1);
+            let avg = (sum / Math.max(course.assignments.length, 1)).toFixed(1);
+            rowHTML += `<td style="font-weight:800; color:var(--primary)">${avg}%</td>`;
+            rowHTML += `<td>
+                <button class="btn btn-outline" style="font-size:0.7rem;" onclick="viewStats(${sIdx})">Analytics</button>
+                <button class="btn-danger" onclick="deleteStudent(${sIdx})">Delete</button>
+            </td>`;
             
-            document.getElementById('analytics-section').style.display = 'block';
-            document.getElementById('prof-name').innerText = s.name;
-            document.getElementById('prof-grade').innerText = final + '%';
-            
-            const ctx = document.getElementById('studentBarChart').getContext('2d');
-            if (chartInstance) chartInstance.destroy();
+            let tr = document.createElement('tr');
+            tr.innerHTML = rowHTML;
+            body.appendChild(tr);
+        });
+    }
 
-            chartInstance = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ['Project 1', 'Project 2', 'Exam'],
-                    datasets: [{
-                        label: 'Student Mark',
-                        data: [s.p1, s.p2, s.exam],
-                        backgroundColor: '#6366f1',
-                        borderRadius: 8,
-                        barThickness: 40
-                    }, {
-                        label: 'Class Avg',
-                        data: [75, 75, 75], // Static placeholder for now
-                        backgroundColor: '#e2e8f0',
-                        borderRadius: 8,
-                        barThickness: 40
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        y: { beginAtZero: true, max: 100, grid: { display: false } },
-                        x: { grid: { display: false } }
-                    }
-                }
-            });
+    // Logic Functions
+    function addAssignment() {
+        data[currentClass].assignments.push("New Project");
+        data[currentClass].students.forEach(s => s.grades.push(0));
+        render();
+    }
+
+    function addStudent() {
+        let emptyGrades = data[currentClass].assignments.map(() => 0);
+        data[currentClass].students.push({ name: "New Student", grades: emptyGrades });
+        render();
+    }
+
+    function updateGrade(sIdx, aIdx, val) {
+        data[currentClass].students[sIdx].grades[aIdx] = parseFloat(val) || 0;
+        render();
+    }
+
+    function updateAssignName(idx, val) {
+        data[currentClass].assignments[idx] = val;
+    }
+
+    function updateStudentName(idx, val) {
+        data[currentClass].students[idx].name = val;
+    }
+
+    function deleteStudent(idx) {
+        if(confirm("Delete this student?")) {
+            data[currentClass].students.splice(idx, 1);
+            render();
         }
+    }
 
-        function saveData() {
-            localStorage.setItem('techmarks_v2', JSON.stringify(db));
-            alert("Local storage updated successfully.");
+    function deleteAssignment(idx) {
+        if(confirm("Delete this entire project column?")) {
+            data[currentClass].assignments.splice(idx, 1);
+            data[currentClass].students.forEach(s => s.grades.splice(idx, 1));
+            render();
         }
+    }
 
-        // Only run once on load
-        window.onload = () => loadClass('TEJ3M');
-    </script>
+    function viewStats(idx) {
+        const s = data[currentClass].students[idx];
+        const labels = data[currentClass].assignments;
+        document.getElementById('analytics').style.display = 'block';
+        document.getElementById('student-info').innerHTML = `
+            <h3 style="margin:0;">${s.name}</h3>
+            <p style="color:var(--primary); font-weight:800; font-size:2rem;">${(s.grades.reduce((a,b)=>a+b,0)/labels.length).toFixed(1)}%</p>
+        `;
+
+        if(chartObj) chartObj.destroy();
+        chartObj = new Chart(document.getElementById('gradeChart'), {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Mark History',
+                    data: s.grades,
+                    borderColor: '#6366f1',
+                    backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: { plugins: { legend: { display: false } }, scales: { y: { min: 0, max: 100 } } }
+        });
+    }
+
+    function saveToDisk() {
+        localStorage.setItem('techmark_v3', JSON.stringify(data));
+        alert("Data synced to browser memory!");
+    }
+
+    window.onload = render;
+</script>
 </body>
 </html>
