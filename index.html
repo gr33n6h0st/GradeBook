@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ontario Tech Gradebook</title>
+    <style>
+        /* CSS: The Look & Feel */
+        :root {
+            --primary: #2563eb;
+            --dark: #0f172a;
+            --light-bg: #f8fafc;
+            --border: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            background-color: var(--light-bg);
+            color: #1e293b;
+        }
+
+        /* Sidebar Navigation */
+        nav {
+            width: 260px;
+            height: 100vh;
+            background: var(--dark);
+            color: white;
+            padding: 2rem 1rem;
+            position: fixed;
+            box-sizing: border-box;
+        }
+
+        nav h2 { font-size: 1.2rem; margin-bottom: 2rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; }
+
+        .nav-btn {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 10px;
+            background: #1e293b;
+            border: 1px solid #334155;
+            color: #f1f5f9;
+            text-align: left;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .nav-btn:hover { background: var(--primary); }
+
+        /* Main Content Area */
+        main {
+            margin-left: 260px;
+            padding: 3rem;
+            width: 100%;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        /* The Table */
+        .card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        th {
+            text-align: left;
+            padding: 12px;
+            background: #f1f5f9;
+            color: #475569;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        /* Editable Cells */
+        [contenteditable="true"] {
+            background: #fffbeb;
+            border-radius: 4px;
+            padding: 4px 8px;
+            border: 1px dashed #fbbf24;
+            outline: none;
+        }
+
+        [contenteditable="true"]:focus {
+            background: #fef3c7;
+            border: 1px solid #d97706;
+        }
+
+        .final-col { font-weight: 800; color: var(--primary); }
+
+        .btn-save {
+            background: #10b981;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <h2>Octo-Grade</h2>
+        <button class="nav-btn" onclick="loadClass('TEJ3M')">Comp Eng (TEJ3M)</button>
+        <button class="nav-btn" onclick="loadClass('TDJ1O')">Tech Design (TDJ1O)</button>
+        <hr style="opacity: 0.1; margin: 2rem 0;">
+        <button class="btn-save" onclick="saveData()">💾 Save to Browser</button>
+    </nav>
+
+    <main>
+        <header>
+            <div>
+                <h1 id="course-title">Computer Engineering</h1>
+                <p id="course-code" style="color: #64748b;">Loading...</p>
+            </div>
+            <button class="nav-btn" style="width: auto;" onclick="addRow()">+ Add Student</button>
+        </header>
+
+        <div class="card">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Student Name</th>
+                        <th>Project 1 (Term)</th>
+                        <th>Project 2 (Term)</th>
+                        <th>Summative/Exam</th>
+                        <th>Overall Grade</th>
+                    </tr>
+                </thead>
+                <tbody id="grade-body">
+                    </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script>
+        // JavaScript: The Logic
+        let currentClass = 'TEJ3M';
+        
+        // Default Data Structure
+        let db = JSON.parse(localStorage.getItem('gradebook_db')) || {
+            'TEJ3M': [
+                { name: "Sample Student", p1: 80, p2: 85, exam: 75 }
+            ],
+            'TDJ1O': [
+                { name: "New Learner", p1: 90, p2: 88, exam: 92 }
+            ]
+        };
+
+        function loadClass(code) {
+            currentClass = code;
+            document.getElementById('course-code').innerText = code;
+            document.getElementById('course-title').innerText = 
+                code.startsWith('TEJ') ? "Computer Engineering" : "Technological Design";
+            renderTable();
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('grade-body');
+            tbody.innerHTML = '';
+
+            db[currentClass].forEach((student, index) => {
+                // Calculation: 70% Term (Avg of P1 & P2), 30% Exam
+                const termAvg = (student.p1 + student.p2) / 2;
+                const finalMark = ((termAvg * 0.7) + (student.exam * 0.3)).toFixed(1);
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td contenteditable="true" onblur="updateData(${index}, 'name', this.innerText)">${student.name}</td>
+                        <td contenteditable="true" onblur="updateData(${index}, 'p1', this.innerText)">${student.p1}</td>
+                        <td contenteditable="true" onblur="updateData(${index}, 'p2', this.innerText)">${student.p2}</td>
+                        <td contenteditable="true" onblur="updateData(${index}, 'exam', this.innerText)">${student.exam}</td>
+                        <td class="final-col">${finalMark}%</td>
+                    </tr>
+                `;
+            });
+        }
+
+        function updateData(index, field, value) {
+            if(field === 'name') {
+                db[currentClass][index][field] = value;
+            } else {
+                db[currentClass][index][field] = parseFloat(value) || 0;
+            }
+            renderTable(); // Re-render to update the final grade calculation
+        }
+
+        function addRow() {
+            db[currentClass].push({ name: "New Student", p1: 0, p2: 0, exam: 0 });
+            renderTable();
+        }
+
+        function saveData() {
+            localStorage.setItem('gradebook_db', JSON.stringify(db));
+            alert("Success: Grades saved to your local browser storage.");
+        }
+
+        // Initialize on load
+        window.onload = () => loadClass('TEJ3M');
+    </script>
+
+</body>
+</html>
