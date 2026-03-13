@@ -3,95 +3,131 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ProGrade | Ontario Tech Edition</title>
+    <title>Tech-Grades Pro | Ontario</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #2563eb; --dark: #0f172a; --accent: #8b5cf6;
-            --bg: #f1f5f9; --white: #ffffff; --border: #e2e8f0;
+            --primary: #6366f1; /* Indigo Modern */
+            --bg: #f8fafc;
+            --sidebar: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --card: #ffffff;
+            --border: #f1f5f9;
         }
 
-        body { font-family: 'Inter', sans-serif; margin: 0; display: flex; background: var(--bg); color: #1e293b; }
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            margin: 0; display: flex; 
+            background: var(--bg); color: var(--text-main); 
+        }
 
-        /* Sidebar */
-        nav { width: 260px; height: 100vh; background: var(--dark); color: white; padding: 2rem 1rem; position: fixed; box-sizing: border-box; z-index: 100; }
-        .nav-btn { width: 100%; padding: 12px; margin-bottom: 8px; background: #1e293b; border: 1px solid #334155; color: white; border-radius: 8px; cursor: pointer; text-align: left; }
-        .nav-btn:hover, .active-nav { background: var(--primary); border-color: var(--primary); }
+        /* Sidebar Navigation */
+        nav { 
+            width: 280px; height: 100vh; background: var(--sidebar); 
+            border-right: 1px solid var(--border); padding: 2rem; 
+            position: fixed; box-sizing: border-box; 
+        }
 
-        /* Layout */
-        main { margin-left: 260px; padding: 2rem; width: calc(100% - 260px); }
-        .grid { display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; }
-
-        /* Components */
-        .card { background: var(--white); padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 2rem; }
-        h2 { margin-top: 0; font-size: 1.25rem; display: flex; align-items: center; gap: 10px; }
+        .nav-header { font-weight: 800; font-size: 1.4rem; margin-bottom: 2rem; color: var(--primary); }
         
-        table { width: 100%; border-collapse: collapse; }
-        th { text-align: left; padding: 12px; background: #f8fafc; color: #64748b; font-size: 0.75rem; text-transform: uppercase; }
-        td { padding: 12px; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
-        
-        [contenteditable="true"] { background: #fffbeb; border-radius: 4px; padding: 4px; outline: none; border: 1px solid transparent; }
-        [contenteditable="true"]:focus { border: 1px solid var(--primary); background: #eff6ff; }
+        .nav-btn { 
+            width: 100%; padding: 14px; margin-bottom: 10px; 
+            background: transparent; border: none; border-radius: 12px; 
+            cursor: pointer; text-align: left; font-weight: 600; color: var(--text-muted);
+            transition: 0.3s;
+        }
+        .nav-btn:hover { background: #f1f5f9; color: var(--primary); }
+        .active-nav { background: #e0e7ff !important; color: var(--primary); }
 
-        .view-btn { background: var(--bg); border: 1px solid var(--border); padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; }
-        .view-btn:hover { background: var(--primary); color: white; }
+        /* Main Content */
+        main { margin-left: 280px; padding: 3rem; width: 100%; max-width: 1200px; }
 
-        /* Student Profile Section */
-        #profile-section { position: sticky; top: 2rem; }
-        .stat-pill { display: inline-block; padding: 4px 12px; border-radius: 20px; background: #dcfce7; color: #166534; font-weight: bold; font-size: 1.2rem; }
+        .header-row { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2.5rem; }
         
-        .btn-save { background: #10b981; color: white; width: 100%; padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 20px; }
+        /* Table Style */
+        .card { 
+            background: var(--card); border-radius: 20px; 
+            padding: 2rem; border: 1px solid var(--border);
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.02);
+            margin-bottom: 2rem;
+        }
+
+        table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
+        th { text-align: left; padding: 10px 15px; color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; }
+        td { padding: 18px 15px; background: #fff; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+        td:first-child { border-left: 1px solid var(--border); border-radius: 12px 0 0 12px; font-weight: 600; }
+        td:last-child { border-right: 1px solid var(--border); border-radius: 0 12px 12px 0; }
+
+        /* Inputs */
+        [contenteditable="true"] { color: var(--primary); font-weight: bold; outline: none; }
+        
+        .btn-action { 
+            background: var(--primary); color: white; padding: 10px 20px; 
+            border-radius: 10px; border: none; font-weight: 600; cursor: pointer;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        /* Profile Analytics Section */
+        .profile-grid { display: grid; grid-template-columns: 1fr 1.5fr; gap: 2rem; align-items: start; }
+        .stat-circle { 
+            width: 120px; height: 120px; border-radius: 50%; 
+            border: 8px solid #e0e7ff; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; margin: 0 auto 1.5rem;
+        }
     </style>
 </head>
 <body>
 
     <nav>
-        <h1 style="font-size: 1.5rem; margin-bottom: 2rem;">ProGrade <span style="color: var(--primary);">.</span></h1>
-        <button class="nav-btn active-nav" onclick="loadClass('TEJ3M')">Computer Eng (TEJ3M)</button>
-        <button class="nav-btn" onclick="loadClass('TDJ1O')">Tech Design (TDJ1O)</button>
-        <div style="margin-top: auto;">
-            <button class="btn-save" onclick="saveData()">💾 Sync Changes</button>
-            <p style="font-size: 0.7rem; color: #94a3b8; text-align: center; margin-top: 10px;">Data stored in browser local storage</p>
+        <div class="nav-header">TechMark Pro</div>
+        <button id="btn-TEJ3M" class="nav-btn active-nav" onclick="loadClass('TEJ3M')">🔌 Comp Eng (TEJ3M)</button>
+        <button id="btn-TDJ1O" class="nav-btn" onclick="loadClass('TDJ1O')">📐 Tech Design (TDJ1O)</button>
+        <div style="position: absolute; bottom: 2rem; width: 215px;">
+            <button class="btn-action" style="width: 100%;" onclick="saveData()">Save All Changes</button>
         </div>
     </nav>
 
     <main>
-        <header style="margin-bottom: 2rem;">
-            <h1 id="course-title" style="margin:0;">Computer Engineering</h1>
-            <span id="course-code" style="color: var(--primary); font-weight: bold;">TEJ3M</span>
-        </header>
+        <div class="header-row">
+            <div>
+                <h1 id="course-title" style="margin:0; font-size: 2rem;">Computer Engineering</h1>
+                <p id="course-code" style="margin:5px 0 0; color: var(--text-muted);">TEJ3M - Semester 2</p>
+            </div>
+            <button class="btn-action" onclick="addRow()">+ Add Student</button>
+        </div>
 
-        <div class="grid">
-            <section>
-                <div class="card">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
-                        <h2>Class Roster</h2>
-                        <button class="view-btn" onclick="addRow()">+ Add Student</button>
-                    </div>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Student</th>
-                                <th>Breadboard/CAD</th>
-                                <th>Programming</th>
-                                <th>Exam</th>
-                                <th>Final</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="grade-body"></tbody>
-                    </table>
-                </div>
-            </section>
+        <div class="card">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Student</th>
+                        <th>Project 1</th>
+                        <th>Project 2</th>
+                        <th>Exam</th>
+                        <th>Final</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="grade-body"></tbody>
+            </table>
+        </div>
 
-            <section id="profile-section">
-                <div class="card">
-                    <div id="profile-content">
-                        <p style="color: #64748b; text-align: center;">Click "View" on a student to see their profile analytics.</p>
+        <div id="analytics-section" class="card" style="display: none;">
+            <div class="profile-grid">
+                <div style="text-align: center; border-right: 1px solid var(--border); padding-right: 2rem;">
+                    <div class="stat-circle">
+                        <span style="font-size: 0.7rem; color: var(--text-muted); font-weight: bold;">GRADE</span>
+                        <span id="prof-grade" style="font-size: 1.8rem; font-weight: 800; color: var(--primary);">--</span>
                     </div>
-                    <canvas id="studentChart" width="400" height="400"></canvas>
+                    <h2 id="prof-name" style="margin: 0;">Select a Student</h2>
+                    <p id="prof-status" style="color: #10b981; font-weight: 600; font-size: 0.9rem;">Exceeding Average</p>
                 </div>
-            </section>
+                <div>
+                    <canvas id="studentBarChart" height="150"></canvas>
+                </div>
+            </div>
         </div>
     </main>
 
@@ -99,101 +135,103 @@
         let currentClass = 'TEJ3M';
         let chartInstance = null;
         
-        let db = JSON.parse(localStorage.getItem('prograde_db')) || {
-            'TEJ3M': [{ name: "Marcus Vane", p1: 88, p2: 92, exam: 85 }],
-            'TDJ1O': [{ name: "Elena Rodriguez", p1: 75, p2: 80, exam: 78 }]
+        // Initialize Data
+        let db = JSON.parse(localStorage.getItem('techmarks_v2')) || {
+            'TEJ3M': [{ name: "Marcus Vane", p1: 85, p2: 90, exam: 82 }],
+            'TDJ1O': [{ name: "Elena Rodriguez", p1: 78, p2: 82, exam: 88 }]
         };
 
         function loadClass(code) {
             currentClass = code;
-            document.getElementById('course-code').innerText = code;
+            document.getElementById('course-code').innerText = `${code} - Semester 2`;
+            document.getElementById('course-title').innerText = code.startsWith('TEJ') ? "Computer Engineering" : "Technological Design";
+            
+            // UI Toggle
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active-nav'));
-            event?.target.classList.add('active-nav');
+            document.getElementById('btn-' + code).classList.add('active-nav');
+            
+            document.getElementById('analytics-section').style.display = 'none';
             renderTable();
         }
 
         function renderTable() {
             const tbody = document.getElementById('grade-body');
             tbody.innerHTML = '';
+            
             db[currentClass].forEach((s, i) => {
-                const final = (( ((s.p1+s.p2)/2)*0.7 ) + (s.exam*0.3)).toFixed(1);
-                tbody.innerHTML += `
-                    <tr>
-                        <td contenteditable="true" onblur="updateData(${i},'name',this.innerText)">${s.name}</td>
-                        <td contenteditable="true" onblur="updateData(${i},'p1',this.innerText)">${s.p1}</td>
-                        <td contenteditable="true" onblur="updateData(${i},'p2',this.innerText)">${s.p2}</td>
-                        <td contenteditable="true" onblur="updateData(${i},'exam',this.innerText)">${s.exam}</td>
-                        <td style="font-weight:bold; color:var(--primary)">${final}%</td>
-                        <td><button class="view-btn" onclick="viewStudent(${i})">View</button></td>
-                    </tr>`;
+                const final = (( ((s.p1 + s.p2)/2) * 0.7 ) + (s.exam * 0.3)).toFixed(1);
+                
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td contenteditable="true" onblur="updateData(${i},'name',this.innerText)">${s.name}</td>
+                    <td contenteditable="true" onblur="updateData(${i},'p1',this.innerText)">${s.p1}</td>
+                    <td contenteditable="true" onblur="updateData(${i},'p2',this.innerText)">${s.p2}</td>
+                    <td contenteditable="true" onblur="updateData(${i},'exam',this.innerText)">${s.exam}</td>
+                    <td style="color: var(--primary); font-weight: 800;">${final}%</td>
+                    <td style="text-align:right;"><button class="btn-action" style="background:#f1f5f9; color:var(--text-main); box-shadow:none; font-size:0.7rem;" onclick="viewStudent(${i})">ANALYTICS</button></td>
+                `;
+                tbody.appendChild(tr);
             });
         }
 
         function updateData(i, field, val) {
             db[currentClass][i][field] = field === 'name' ? val : (parseFloat(val) || 0);
             renderTable();
+            if(document.getElementById('analytics-section').style.display === 'block') viewStudent(i);
         }
 
         function addRow() {
+            // Push exactly ONE student
             db[currentClass].push({ name: "New Student", p1: 0, p2: 0, exam: 0 });
             renderTable();
         }
 
         function viewStudent(i) {
             const s = db[currentClass][i];
-            const final = (( ((s.p1+s.p2)/2)*0.7 ) + (s.exam*0.3)).toFixed(1);
+            const final = (( ((s.p1 + s.p2)/2) * 0.7 ) + (s.exam * 0.3)).toFixed(1);
             
-            // Calculate Class Average for comparison
-            const classAvg = (db[currentClass].reduce((acc, curr) => acc + ((curr.p1+curr.p2)/2 * 0.7 + curr.exam * 0.3), 0) / db[currentClass].length).toFixed(1);
-
-            document.getElementById('profile-content').innerHTML = `
-                <h2 style="margin-bottom:5px;">${s.name}</h2>
-                <p style="margin-bottom:15px; color:#64748b;">Student ID: #2026-${i+100}</p>
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <span>Current Grade</span>
-                    <span class="stat-pill">${final}%</span>
-                </div>
-                <hr style="margin:20px 0; opacity:0.1;">
-                <p style="font-size:0.8rem; font-weight:bold; text-transform:uppercase;">Performance Analytics</p>
-            `;
-
-            updateChart(s, classAvg);
-        }
-
-        function updateChart(student, classAvg) {
-            const ctx = document.getElementById('studentChart').getContext('2d');
+            document.getElementById('analytics-section').style.display = 'block';
+            document.getElementById('prof-name').innerText = s.name;
+            document.getElementById('prof-grade').innerText = final + '%';
+            
+            const ctx = document.getElementById('studentBarChart').getContext('2d');
             if (chartInstance) chartInstance.destroy();
 
             chartInstance = new Chart(ctx, {
-                type: 'radar',
+                type: 'bar',
                 data: {
-                    labels: ['Breadboard/CAD', 'Programming', 'Summative/Exam'],
+                    labels: ['Project 1', 'Project 2', 'Exam'],
                     datasets: [{
-                        label: student.name,
-                        data: [student.p1, student.p2, student.exam],
-                        backgroundColor: 'rgba(37, 99, 235, 0.2)',
-                        borderColor: '#2563eb',
-                        pointBackgroundColor: '#2563eb'
+                        label: 'Student Mark',
+                        data: [s.p1, s.p2, s.exam],
+                        backgroundColor: '#6366f1',
+                        borderRadius: 8,
+                        barThickness: 40
                     }, {
-                        label: 'Class Average',
-                        data: [80, 80, 80], // You can make this dynamic by calculating avg per assignment
-                        backgroundColor: 'rgba(148, 163, 184, 0.1)',
-                        borderColor: '#94a3b8',
-                        borderDash: [5, 5]
+                        label: 'Class Avg',
+                        data: [75, 75, 75], // Static placeholder for now
+                        backgroundColor: '#e2e8f0',
+                        borderRadius: 8,
+                        barThickness: 40
                     }]
                 },
-                options: { 
-                    scales: { r: { min: 0, max: 100 } },
-                    plugins: { legend: { position: 'bottom' } }
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, max: 100, grid: { display: false } },
+                        x: { grid: { display: false } }
+                    }
                 }
             });
         }
 
         function saveData() {
-            localStorage.setItem('prograde_db', JSON.stringify(db));
-            alert("Success: Changes synced to GitHub environment local-storage.");
+            localStorage.setItem('techmarks_v2', JSON.stringify(db));
+            alert("Local storage updated successfully.");
         }
 
+        // Only run once on load
         window.onload = () => loadClass('TEJ3M');
     </script>
 </body>
